@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">RSS Aggregator</string>
+
+    <string name="login_tab_login">Login</string>
+    <string name="login_tab_signup">Sign Up</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_login">Log In</string>
+    <string name="login_button_signup">Sign Up</string>
+    <string name="login_button_success">Success</string>
+    <string name="login_button_loading">Loading</string>
+
+    <string name="login_empty_email">Please fill the email field!</string>
+    <string name="login_empty_password">Please fill the password field!</string>
 </resources>
