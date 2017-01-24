@@ -65,7 +65,7 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     }
   }
 
-
+/*
   @SuppressWarnings("UnusedDeclaration")
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(LogInEvent event) {
@@ -80,5 +80,5 @@ public class SignUpPresenterImpl implements SignUpPresenter {
         this.signUpView.showErrorSnackbar(event.getThrowable().getMessage());
       }
     }
-  }
+  }*/
 }

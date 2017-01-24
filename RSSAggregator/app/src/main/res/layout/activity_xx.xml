@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawerLayout"
+    android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,29 +11,19 @@
     >
 
     <include
-        layout="@layout/app_bar_main"
+        layout="@layout/app_bar_xx"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="match_parent"
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header"
-        >
-
-        <ExpandableListView
-            android:id="@+id/expandableListView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="192dp"
-            android:background="@android:color/white"
-            android:groupIndicator="@null"
-            />
-
-    </android.support.design.widget.NavigationView>
+        app:headerLayout="@layout/nav_header_xx"
+        app:menu="@menu/activity_xx_drawer"
+        />
 
 </android.support.v4.widget.DrawerLayout>

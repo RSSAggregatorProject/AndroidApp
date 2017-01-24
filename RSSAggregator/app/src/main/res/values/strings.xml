@@ -12,4 +12,10 @@
 
     <string name="login_empty_email">Please fill the email field!</string>
     <string name="login_empty_password">Please fill the password field!</string>
+    <string name="title_activity_xx">XXActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

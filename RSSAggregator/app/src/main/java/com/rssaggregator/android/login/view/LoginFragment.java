@@ -1,6 +1,7 @@
 package com.rssaggregator.android.login.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.orhanobut.logger.Logger;
+import com.rssaggregator.android.MainActivity;
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.dependency.AppComponent;
@@ -59,6 +61,9 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setMode(ActionProcessButton.Mode.ENDLESS);
     this.loginBt.setProgress(0);
     injectDependencies();
+
+    this.emailEt.setText("ok");
+    this.passwordEt.setText("ok");
   }
 
   @Override
@@ -129,11 +134,17 @@ public class LoginFragment extends Fragment implements LoginView {
   public void showErrorSnackbar(String errorMessage) {
     this.loginBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_SHORT).show();
+    Intent intent = new Intent(getActivity(), MainActivity.class);
+    getActivity().startActivity(intent);
+    getActivity().finish();
   }
 
   @Override
   public void loginSuccessful(AccessToken accessToken) {
     this.loginBt.setProgress(100);
+    Intent intent = new Intent(getActivity(), MainActivity.class);
+    startActivity(intent);
+    getActivity().finish();
     Logger.e("Logged: " + accessToken.getToken() + " | " + accessToken.getEmail());
   }
 }
