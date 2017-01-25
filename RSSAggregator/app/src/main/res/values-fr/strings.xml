@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RSS Aggregator</string>
+
+    <!--LOGIN VIEWS-->
+    <string name="login_tab_login">Connexion</string>
+    <string name="login_tab_signup">Inscription</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Mot de passe</string>
+    <string name="login_button_login">Connexion</string>
+    <string name="login_button_signup">Inscription</string>
+    <string name="login_button_success">Succès</string>
+    <string name="login_button_loading">Chargement</string>
+
+    <string name="login_empty_email">Veillez renseigner le champ \"Email\" svp !</string>
+    <string name="login_empty_password">Veillez renseigner le champ \"Mot de passe\" svp !</string>
+
+
+    <!--NAVIGATION DRAWER -->
+    <string name="category_all">Tous</string>
+    <string name="category_star">Articles favoris</string>
+
+</resources>
