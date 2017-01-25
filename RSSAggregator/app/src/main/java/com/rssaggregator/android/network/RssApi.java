@@ -7,4 +7,6 @@ public interface RssApi {
   void logIn(Credentials credentials);
 
   void signUp(Credentials credentials);
+
+  void fetchData(String authorization);
 }

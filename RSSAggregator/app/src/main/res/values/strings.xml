@@ -18,4 +18,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!--NAVIGATION DRAWER -->
+    <string name="category_all">All</string>
+    <string name="category_star">Starred Items</string>
 </resources>

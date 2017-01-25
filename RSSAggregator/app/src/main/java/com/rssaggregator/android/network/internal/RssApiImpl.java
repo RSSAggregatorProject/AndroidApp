@@ -3,16 +3,27 @@ package com.rssaggregator.android.network.internal;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.orhanobut.logger.Logger;
+import com.rssaggregator.android.R;
 import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.error.ApiError;
+import com.rssaggregator.android.network.event.FetchDataEvent;
 import com.rssaggregator.android.network.event.LogInEvent;
 import com.rssaggregator.android.network.event.SignUpEvent;
 import com.rssaggregator.android.network.model.AccessToken;
+import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Credentials;
+import com.rssaggregator.android.network.utils.DateDeserializer;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -81,6 +92,44 @@ public class RssApiImpl implements RssApi {
       @Override
       public void onFailure(Call<Void> call, Throwable t) {
         eventBus.post(new SignUpEvent(new Throwable("Error")));
+      }
+    });
+  }
+
+  @Override
+  public void fetchData(String authorization) {
+    this.restService.fetchData(authorization).enqueue(new Callback<CategoriesWrapper>() {
+      @Override
+      public void onResponse(Call<CategoriesWrapper> call, Response<CategoriesWrapper> response) {
+        if (response.isSuccessful()) {
+          CategoriesWrapper wrapper = response.body();
+          eventBus.post(new FetchDataEvent(wrapper));
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+            gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
+            Gson gson = gsonBuilder.create();
+
+            InputStream raw = context.getResources().openRawResource(R.raw.data);
+            Reader rd = new BufferedReader(new InputStreamReader(raw));
+
+            CategoriesWrapper wrapper = gson.fromJson(rd, CategoriesWrapper.class);
+            eventBus.post(new FetchDataEvent(wrapper));
+            //eventBus.post(new FetchDataEvent(new Throwable(error.getErrorDetails())));
+          } catch (IOException e) {
+            Logger.e("Exception");
+            eventBus.post(new FetchDataEvent(new Throwable("Error")));
+          }
+        }
+      }
+
+      @Override
+      public void onFailure(Call<CategoriesWrapper> call, Throwable t) {
+        eventBus.post(new FetchDataEvent(new Throwable("Error")));
       }
     });
   }

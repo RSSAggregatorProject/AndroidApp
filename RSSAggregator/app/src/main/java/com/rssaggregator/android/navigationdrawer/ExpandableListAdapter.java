@@ -1,6 +1,7 @@
 package com.rssaggregator.android.navigationdrawer;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
@@ -10,8 +11,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 import com.rssaggregator.android.R;
+import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,18 +27,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
   private ExpandableListView expandableListView;
   private Context context;
+  private Resources resources;
 
   // Data
   private List<Category> categoryList;
   private HashMap<Category, List<Channel>> channelList;
 
+  // EventBus
+  private EventBus eventBus;
+
   public ExpandableListAdapter(Context context, List<Category> categoryList,
                                HashMap<Category, List<Channel>> channelList,
-                               ExpandableListView expandableListView) {
+                               ExpandableListView expandableListView, EventBus eventBus) {
     this.context = context;
+    this.resources = context.getResources();
     this.categoryList = categoryList;
     this.channelList = channelList;
     this.expandableListView = expandableListView;
+    this.eventBus = eventBus;
   }
 
   @Override
@@ -77,7 +87,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
   public View getGroupView(final int groupPosition, final boolean isExpanded, View convertView,
                            ViewGroup
                                parent) {
-    Category category = (Category) getGroup(groupPosition);
+    final Category category = (Category) getGroup(groupPosition);
 
     View view = convertView;
     final CategoryViewHolder viewHolder;
@@ -95,20 +105,46 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     viewHolder.nameCategory.setText(category.getName());
 
     // Set All and Starred categories
-    if ("All".equals(category.getName())) {
+    if (resources.getString(R.string.category_all).equals(category.getName())) {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_all_inclusive_black_24dp);
-    } else if ("Starred Items".equals(category.getName())) {
+    } else if (resources.getString(R.string.category_star).equals(category.getName())) {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_star_black_24dp);
     } else {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_chevron_right_black_24dp);
     }
+
+    if (resources.getString(R.string.category_all).equals(category.getName())) {
+      viewHolder.rowCategory.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          eventBus.post(new NavigationItemClickedEvent(true, false));
+        }
+      });
+    } else if (resources.getString(R.string.category_star).equals(category.getName())) {
+      viewHolder.rowCategory.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          eventBus.post(new NavigationItemClickedEvent(false, true));
+        }
+      });
+    } else {
+      viewHolder.nameCategory.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          eventBus.post(new NavigationItemClickedEvent(category));
+        }
+      });
+    }
+
+
     return view;
   }
 
   @Override
   public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View
       convertView, ViewGroup parent) {
-    Channel channel = (Channel) getChild(groupPosition, childPosition);
+    final Channel channel = (Channel) getChild(groupPosition, childPosition);
+    final Category category = (Category) getGroup(groupPosition);
 
     View view = convertView;
     ChannelViewHolder viewHolder;
@@ -126,6 +162,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     viewHolder.nameChannel.setText(channel.getName());
     viewHolder.unreadChannel.setText(String.valueOf(channel.getUnread()));
 
+    viewHolder.rowChannel.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        eventBus.post(new NavigationItemClickedEvent(channel, category));
+      }
+    });
+
     return view;
   }
 
@@ -135,7 +178,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
   }
 
   public final class CategoryViewHolder {
-    @BindView(R.id.rowCategory) View view;
+    @BindView(R.id.rowCategory) View rowCategory;
     @BindView(R.id.iconCategory) AppCompatImageView iconCategory;
     @BindView(R.id.nameCategory) AppCompatTextView nameCategory;
     @BindView(R.id.unreadCategory) AppCompatTextView unreadCategory;
@@ -146,7 +189,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
   }
 
   public final class ChannelViewHolder {
-    @BindView(R.id.rowChannel) View view;
+    @BindView(R.id.rowChannel) View rowChannel;
     @BindView(R.id.iconChannel) AppCompatImageView iconChannel;
     @BindView(R.id.nameChannel) AppCompatTextView nameChannel;
     @BindView(R.id.unreadChannel) AppCompatTextView unreadChannel;

@@ -1,0 +1,59 @@
+{
+  "status": "Succes",
+  "data": [
+    {
+      "id_cat": 1,
+      "name": "Automobile",
+      "unread": 18,
+      "feeds": [
+        {
+          "id_feed": 1,
+          "name": "Turbo.fr",
+          "favicon_uri": "http://www.turbo.fr/favicon.ico",
+          "unread": 12
+        },
+        {
+          "id_feed": 2,
+          "name": "Caradisiac",
+          "favicon_uri": "null",
+          "unread": 6
+        }
+      ]
+    },
+    {
+      "id_cat": 2,
+      "name": "Sports",
+      "unread": 20,
+      "feeds": [
+        {
+          "id_feed": 3,
+          "name": "Eurosport.fr",
+          "favicon_uri": "null",
+          "unread": 20,
+          "items": [
+            {
+              "id_item": 1,
+              "name": "Drogba a Marseille",
+              "title": "Drogba à Marseille",
+              "text": "Petite nouvelle: Drogba va à l'OM pour 2€.",
+              "date": "2017-01-12 00:00:00",
+              "url": "http://www.eurosport.fr/",
+              "read": false,
+              "starred": false
+            },
+            {
+              "id_item": 2,
+              "name": "Payet n'en fait qu'à sa tête",
+              "title": "Payet n'en fait qu'à sa tête",
+              "text": "Payet fait la diva et veut jouer a l'OM",
+              "date": "2017-01-12 00:00:00",
+              "url": "http://www.eurosport.fr/",
+              "read": false,
+              "starred": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

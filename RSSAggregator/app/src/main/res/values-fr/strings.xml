@@ -15,4 +15,9 @@
     <string name="login_empty_email">Veillez renseigner le champ \"Email\" svp !</string>
     <string name="login_empty_password">Veillez renseigner le champ \"Mot de passe\" svp !</string>
 
+
+    <!--NAVIGATION DRAWER -->
+    <string name="category_all">Tous</string>
+    <string name="category_star">Articles favoris</string>
+
 </resources>
