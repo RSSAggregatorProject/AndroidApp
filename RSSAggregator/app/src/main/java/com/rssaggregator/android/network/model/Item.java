@@ -39,6 +39,7 @@ public class Item {
   private boolean starred;
 
   private Integer categoryId;
+  private String nameChannel;
 
   public Integer getItemId() {
     return itemId;
@@ -118,5 +119,13 @@ public class Item {
 
   public void setCategoryId(Integer categoryId) {
     this.categoryId = categoryId;
+  }
+
+  public String getNameChannel() {
+    return nameChannel;
+  }
+
+  public void setNameChannel(String nameChannel) {
+    this.nameChannel = nameChannel;
   }
 }

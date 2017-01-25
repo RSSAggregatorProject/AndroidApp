@@ -9,12 +9,14 @@ import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
 import com.rssaggregator.android.utils.DatabaseUtils;
+import com.rssaggregator.android.utils.Globals;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FeedsDataSource {
 
@@ -29,6 +31,14 @@ public class FeedsDataSource {
   // Categories methods.
   //
   //
+
+  /**
+   * Insert a category in the database.
+   *
+   * @param category Category to insert.
+   *
+   * @return id of the new element
+   */
   public long insertCategory(Category category) {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
 
@@ -38,14 +48,9 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.UNREAD_CATEGORY, category.getUnread());
 
     long rowId = database.insert(DatabaseUtils.TABLE_CATEGORY, null, values);
+    database.close();
 
     return rowId;
-  }
-
-  public void deleteAllCategories() {
-    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
-    database.execSQL("DELETE FROM " + DatabaseUtils.TABLE_CATEGORY);
-    database.close();
   }
 
   public List<Category> getCategories() {
@@ -70,11 +75,28 @@ public class FeedsDataSource {
     return categories;
   }
 
+  /**
+   * Delete all rows in the Category table.
+   */
+  public void deleteAllCategories() {
+    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
+    database.execSQL(DatabaseUtils.DELETE_ALL_CATEGORIES);
+    database.close();
+  }
+
   //
   //
   // Channel methods
   //
   //
+
+  /**
+   * Insert a channel to the database.
+   *
+   * @param channel Channel to insert.
+   *
+   * @return Id of the new element created.
+   */
   public long insertChannel(Channel channel) {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
 
@@ -86,14 +108,9 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.FAVICON_URI_CHANNEL, channel.getFaviconUri());
 
     long rowId = database.insert(DatabaseUtils.TABLE_CHANNEL, null, values);
+    database.close();
 
     return rowId;
-  }
-
-  public void deleteAllChannels() {
-    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
-    database.execSQL("DELETE FROM " + DatabaseUtils.TABLE_CHANNEL);
-    database.close();
   }
 
   public List<Channel> getChannelsByCategoryId(Integer categoryId) {
@@ -121,15 +138,32 @@ public class FeedsDataSource {
     return channels;
   }
 
+  /**
+   * Delete all rows in the Channel table.
+   */
+  public void deleteAllChannels() {
+    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
+    database.execSQL(DatabaseUtils.DELETE_ALL_CHANNELS);
+    database.close();
+  }
+
   //
   //
   // Item methods.
   //
   //
+
+  /**
+   * Insert a item to the database.
+   *
+   * @param item Item to insert.
+   *
+   * @return id of the new element created.
+   */
   public long insertItem(Item item) {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
     String pubDate = sdf.format(item.getPubDate());
 
     ContentValues values = new ContentValues();
@@ -137,6 +171,7 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.ID_CHANNEL, item.getChannelId());
     values.put(DatabaseUtils.ID_CATEGORY, item.getCategoryId());
     values.put(DatabaseUtils.NAME_ITEM, item.getName());
+    values.put(DatabaseUtils.NAME_CHANNEL, item.getNameChannel());
     values.put(DatabaseUtils.TITLE_ITEM, item.getTitle());
     values.put(DatabaseUtils.DESCRIPTION_ITEM, item.getDescription());
     values.put(DatabaseUtils.PUBDATE_ITEM, pubDate);
@@ -145,93 +180,201 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.STARRED_ITEM, item.isStarred());
 
     long rowId = database.insert(DatabaseUtils.TABLE_ITEM, null, values);
+    database.close();
 
     return rowId;
   }
 
+  /**
+   * Select all items in the database.
+   *
+   * @return a List of Items.
+   */
+  public List<Item> selectAllItems() {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
+
+    List<Item> items = new ArrayList<>();
+    String selectQuery = DatabaseUtils.SELECT_ALL_ITEMS;
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Item item = new Item();
+        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
+        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
+        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
+        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
+        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
+
+        Date pubDate;
+        try {
+          pubDate = sdf.parse(
+              c.getString(c.getColumnIndex(DatabaseUtils.PUBDATE_ITEM)));
+        } catch (ParseException e) {
+          e.printStackTrace();
+          pubDate = new Date();
+        }
+        item.setPubDate(pubDate);
+        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
+        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
+        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
+        items.add(item);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return items;
+  }
+
+  /**
+   * Select starred items in the database.
+   *
+   * @return a List of Items.
+   */
+  public List<Item> selectStarredItems() {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
+
+    List<Item> items = new ArrayList<>();
+    String selectQuery = DatabaseUtils.SELECT_STARRED_ITEMS;
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Item item = new Item();
+        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
+        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
+        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
+        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
+        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
+
+        Date pubDate;
+        try {
+          pubDate = sdf.parse(
+              c.getString(c.getColumnIndex(DatabaseUtils.PUBDATE_ITEM)));
+        } catch (ParseException e) {
+          e.printStackTrace();
+          pubDate = new Date();
+        }
+        item.setPubDate(pubDate);
+        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
+        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
+        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
+        items.add(item);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return items;
+  }
+
+  /**
+   * Selects items from a category in the database thanks to the category ID.
+   *
+   * @param categoryId id of the category to fetch.
+   *
+   * @return List of Items.
+   */
+  public List<Item> selectItemsByCategoryId(Integer categoryId) {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
+
+    List<Item> items = new ArrayList<>();
+    String selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CATEGORY_ID(categoryId);
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Item item = new Item();
+        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
+        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
+        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
+        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
+        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
+
+        Date pubDate;
+        try {
+          pubDate = sdf.parse(
+              c.getString(c.getColumnIndex(DatabaseUtils.PUBDATE_ITEM)));
+        } catch (ParseException e) {
+          e.printStackTrace();
+          pubDate = new Date();
+        }
+        item.setPubDate(pubDate);
+        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
+        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
+        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
+        items.add(item);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return items;
+  }
+
+  /**
+   * Selects items from a channel in the database thanks to the channel ID.
+   *
+   * @param channelId id of the channel to fetch.
+   *
+   * @return List of Items.
+   */
+  public List<Item> selectItemsByChannelId(Integer channelId) {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
+
+    List<Item> items = new ArrayList<>();
+    String selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CHANNEL_ID(channelId);
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Item item = new Item();
+        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
+        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
+        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
+        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
+        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
+
+        Date pubDate;
+        try {
+          pubDate = sdf.parse(
+              c.getString(c.getColumnIndex(DatabaseUtils.PUBDATE_ITEM)));
+        } catch (ParseException e) {
+          e.printStackTrace();
+          pubDate = new Date();
+        }
+        item.setPubDate(pubDate);
+        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
+        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
+        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
+        items.add(item);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return items;
+  }
+
+  /**
+   * Deletes all rows in the Item table.
+   */
   public void deleteAllItems() {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
-    database.execSQL("DELETE FROM " + DatabaseUtils.TABLE_ITEM);
+    database.execSQL(DatabaseUtils.DELETE_ALL_ITEMS);
     database.close();
   }
-
-  public List<Item> getAllItems() {
-    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
-
-    List<Item> items = new ArrayList<Item>();
-    String selectQuery = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM + " ORDER BY "
-        + DatabaseUtils.PUBDATE_ITEM + " DESC";
-
-    Cursor c = database.rawQuery(selectQuery, null);
-
-    if (c.moveToFirst()) {
-      do {
-        Item item = new Item();
-        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
-        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
-        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
-        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date pubDate = new Date();
-        try {
-          pubDate = simpleDateFormat.parse(c.getString(c.getColumnIndex(DatabaseUtils
-              .PUBDATE_ITEM)));
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
-        item.setPubDate(pubDate);
-        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
-        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
-        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
-        items.add(item);
-      } while (c.moveToNext());
-    }
-    c.close();
-    database.close();
-    return items;
-  }
-
-  public List<Item> getStarredItems(Boolean isStarred) {
-    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
-
-    List<Item> items = new ArrayList<Item>();
-    String selectQuery = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
-        + " WHERE " + DatabaseUtils.STARRED_ITEM + "=1 " +
-        " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
-
-    Cursor c = database.rawQuery(selectQuery, null);
-
-    if (c.moveToFirst()) {
-      do {
-        Item item = new Item();
-        item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
-        item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
-        item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
-        item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date pubDate = new Date();
-        try {
-          pubDate = simpleDateFormat.parse(c.getString(c.getColumnIndex(DatabaseUtils
-              .PUBDATE_ITEM)));
-        } catch (ParseException e) {
-          e.printStackTrace();
-        }
-        item.setPubDate(pubDate);
-        item.setLinkUrl(c.getString(c.getColumnIndex(DatabaseUtils.LINK_ITEM)));
-        item.setRead(c.getInt(c.getColumnIndex(DatabaseUtils.READ_ITEM)) > 0);
-        item.setStarred(c.getInt(c.getColumnIndex(DatabaseUtils.STARRED_ITEM)) > 0);
-        items.add(item);
-      } while (c.moveToNext());
-    }
-    c.close();
-    database.close();
-    return items;
-  }
-
 }

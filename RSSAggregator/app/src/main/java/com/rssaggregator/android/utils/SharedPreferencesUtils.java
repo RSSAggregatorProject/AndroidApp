@@ -23,6 +23,20 @@ public class SharedPreferencesUtils {
     return sharedPreferences.getString(Globals.PREFERENCES_API_KEY, null);
   }
 
+  public static void setUserEmail(Activity activity, String userEmail) {
+    SharedPreferences sharedPreferences = activity.getSharedPreferences(PREF_FILE_NAME,
+        MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putString(Globals.PREFERENCES_USER_EMAIL_KEY, userEmail);
+    editor.apply();
+  }
+
+  public static String getUserEmail(Activity activity) {
+    SharedPreferences sharedPreferences = activity.getSharedPreferences(PREF_FILE_NAME,
+        MODE_PRIVATE);
+    return sharedPreferences.getString(Globals.PREFERENCES_USER_EMAIL_KEY, null);
+  }
+
   public static void setUserId(Activity activity, Integer userId) {
     SharedPreferences sharedPreferences = activity.getSharedPreferences(PREF_FILE_NAME,
         MODE_PRIVATE);

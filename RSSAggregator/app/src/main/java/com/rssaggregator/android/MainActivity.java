@@ -1,29 +1,38 @@
 package com.rssaggregator.android;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 
 import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.dependency.AppComponent;
-import com.rssaggregator.android.feed.database.FeedsDataSource;
+import com.rssaggregator.android.feed.adapter.ItemsAdapter;
 import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.feed.presenter.MainPresenterImpl;
 import com.rssaggregator.android.feed.view.MainView;
+import com.rssaggregator.android.login.LoginActivity;
 import com.rssaggregator.android.navigationdrawer.ExpandableListAdapter;
-import com.rssaggregator.android.network.event.LogInEvent;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,39 +47,53 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
+  // Navigation Drawer Views.
   @BindView(R.id.drawerLayout) DrawerLayout drawerLayout;
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.navigationView) NavigationView navigationView;
   @BindView(R.id.expandableListView) ExpandableListView expandableListView;
 
   // Main Views
+  @BindView(R.id.itemsRecyclerView) RecyclerView itemsRecyclerView;
   @BindView(R.id.contentView) RelativeLayout contentView;
   @BindView(R.id.loadingView) RelativeLayout loadingView;
   @BindView(R.id.errorView) AppCompatTextView errorView;
   @BindView(R.id.emptyView) AppCompatTextView emptyView;
-  @BindView(R.id.numbers) AppCompatTextView numbersTv;
 
   // Adapter
   private ExpandableListAdapter adapter;
+  private ItemsAdapter itemsAdapter;
 
   // Data
   private List<Category> categoriesList;
   private HashMap<Category, List<Channel>> channelsList;
 
   // Network
-  private AppComponent appComponent;
   private MainPresenterImpl presenter;
   private EventBus eventBus;
 
+  // Others
+  private Resources resources;
+
+  //
+  //
+  // Life Cycle Methods.
+  //
+  //
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
+    this.resources = getResources();
     injectDependencies();
-
     initializeNavigationDrawer();
     this.presenter.loadAllData();
+
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+    this.itemsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+        DividerItemDecoration.VERTICAL));
+    this.itemsRecyclerView.setLayoutManager(linearLayoutManager);
   }
 
   @Override
@@ -80,33 +103,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
   }
 
   @Override
-  protected void onPause() {
+  protected void onStop() {
     this.eventBus.unregister(this);
-    super.onPause();
-  }
-
-  private void initializeNavigationDrawer() {
-    setSupportActionBar(this.toolbar);
-    getSupportActionBar().setTitle(getString(R.string.category_all));
-
-    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-        this, drawerLayout, toolbar,
-        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-    drawerLayout.setDrawerListener(toggle);
-    toggle.syncState();
-
-    createFakeData();
-
-    this.adapter = new ExpandableListAdapter(this, categoriesList, channelsList,
-        expandableListView, eventBus);
-    this.expandableListView.setAdapter(this.adapter);
-  }
-
-  private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(this).getAppComponent();
-    this.eventBus = appComponent.bus();
-    this.presenter = appComponent.mainPresenterImpl();
-    this.presenter.setMainView(this);
+    super.onStop();
   }
 
   @Override
@@ -118,60 +117,103 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
   }
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onMessageEvent(LogInEvent event) {
-    Logger.e("TOKEN: " + event.getData().getToken());
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return true;
   }
 
-  private void createFakeData() {
-    this.categoriesList = new ArrayList<Category>();
-    this.channelsList = new HashMap<Category, List<Channel>>();
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
 
-    Category allCat = new Category();
-    allCat.setName(getString(R.string.category_all));
-    Category starredItemsCat = new Category();
-    starredItemsCat.setName(getString(R.string.category_star));
+    if (id == R.id.action_add_channel) {
+      Logger.e("Add a channel");
+      return true;
+    } else if (id == R.id.action_refresh) {
+      this.presenter.loadAllData();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
 
-    this.categoriesList.add(allCat);
-    this.categoriesList.add(starredItemsCat);
+  //
+  //
+  // Others methods.
+  //
+  //
 
+  /**
+   * Injects dependencies.
+   */
+  private void injectDependencies() {
+    AppComponent appComponent = RssAggregatorApplication.get(this).getAppComponent();
+    this.eventBus = appComponent.bus();
+    this.presenter = appComponent.mainPresenterImpl();
+    this.presenter.setMainView(this);
+    this.presenter.setDatabase(this);
+  }
 
-/*    Category automobileCat = new Category();
-    automobileCat.setName("Automobile");
-    Category sportCat = new Category();
-    sportCat.setName("Sport");
+  private void initializeNavigationDrawer() {
+    // Set toolbar title.
+    setSupportActionBar(this.toolbar);
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setTitle(getString(R.string.category_all));
+    }
 
-    Channel turboChan = new Channel();
-    turboChan.setName("Turbo.fr");
-    turboChan.setUnread(10);
-    Channel caradisiacChan = new Channel();
-    caradisiacChan.setName("Caradisiac");
-    caradisiacChan.setUnread(1);
-    Channel eurosportChan = new Channel();
-    eurosportChan.setName("Eurosport");
-    eurosportChan.setUnread(235);
+    initializeHeader();
+    initializeMainCategories();
 
-    List<Channel> channelList = new ArrayList<>();
-    channelList.add(turboChan);
-    channelList.add(caradisiacChan);
-    automobileCat.setChannels(channelList);
+    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        this, drawerLayout, toolbar,
+        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    drawerLayout.setDrawerListener(toggle);
+    toggle.syncState();
 
-    List<Channel> channelList2 = new ArrayList<>();
-    channelList2.add(eurosportChan);
-    sportCat.setChannels(channelList2);
+    // Set Expandable list view adapter.
+    this.adapter = new ExpandableListAdapter(this, categoriesList, channelsList,
+        expandableListView, eventBus);
+    this.expandableListView.setAdapter(this.adapter);
+  }
 
-    this.categoriesList.add(allCat);
-    this.categoriesList.add(starredItemsCat);
-    this.categoriesList.add(automobileCat);
-    this.categoriesList.add(sportCat);
+  /**
+   * Initializes Navigation Header View.
+   */
+  private void initializeHeader() {
+    View headerView = navigationView.getHeaderView(0);
+    AppCompatTextView userEmailTv = (AppCompatTextView) headerView.findViewById(R.id.userEmail);
+    AppCompatImageView logoutButtonIg = (AppCompatImageView)
+        headerView.findViewById(R.id.logoutButton);
 
-    for (Category category : this.categoriesList) {
-      if (category.getChannels() == null) {
-        this.channelsList.put(category, new ArrayList<Channel>());
-      } else {
-        this.channelsList.put(category, category.getChannels());
+    String userEmail = SharedPreferencesUtils.getUserEmail(this);
+    userEmailTv.setText(userEmail);
+
+    logoutButtonIg.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
       }
-    }*/
+    });
+  }
+
+  /**
+   * Initializes the All And Starred Items categories.
+   */
+  private void initializeMainCategories() {
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setTitle(getString(R.string.category_all));
+    }
+    this.categoriesList = new ArrayList<>();
+    this.channelsList = new HashMap<>();
+
+    Category allCategory = new Category();
+    allCategory.setName(resources.getString(R.string.category_all));
+    Category starredItemsCategory = new Category();
+    starredItemsCategory.setName(resources.getString(R.string.category_star));
+    this.categoriesList.add(allCategory);
+    this.categoriesList.add(starredItemsCategory);
   }
 
   //
@@ -185,21 +227,46 @@ public class MainActivity extends AppCompatActivity implements MainView {
     if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
       this.drawerLayout.closeDrawer(GravityCompat.START);
     }
+    /**
+     * Click on All category.
+     */
     if (event.isAll()) {
-      getSupportActionBar().setTitle(getString(R.string.category_all));
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setTitle(getString(R.string.category_all));
+        this.presenter.fetchAllItems();
+      }
       return;
     }
+    /**
+     * Click on Starred Items category.
+     */
     if (event.isStar()) {
-      getSupportActionBar().setTitle(getString(R.string.category_star));
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setTitle(getString(R.string.category_star));
+        this.presenter.fetchStarredItems();
+      }
       return;
     }
+    /**
+     * Click on a Category.
+     */
     if (event.getChannel() == null) {
       Category category = event.getCategory();
-      getSupportActionBar().setTitle(category.getName());
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setTitle(category.getName());
+      }
+      this.presenter.fetchItemsByCategoryId(category.getCategoryId());
     } else {
+      /**
+       * Click on a Channel.
+       */
       Category category = event.getCategory();
       Channel channel = event.getChannel();
-      getSupportActionBar().setTitle(channel.getName() + " / " + category.getName());
+      if (getSupportActionBar() != null) {
+        getSupportActionBar().setTitle(resources.getString(R.string.category_channel,
+            channel.getName(), category.getName()));
+      }
+      this.presenter.fetchItemsByChannelId(channel.getChannelId());
     }
   }
 
@@ -208,7 +275,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
   // Methods called from the presenter.
   //
   //
-
   @Override
   public void showLoading() {
     this.contentView.setVisibility(View.GONE);
@@ -232,113 +298,105 @@ public class MainActivity extends AppCompatActivity implements MainView {
   }
 
   @Override
-  public void showContent(CategoriesWrapper wrapper) {
-    /**
-     * DATABASE
-     */
-    FeedsDataSource dataBase = new FeedsDataSource(this);
-
+  public void setNavigationContent(CategoriesWrapper wrapper) {
     if (wrapper.getCategories() != null && wrapper.getCategories().size() != 0) {
       List<Category> categories = wrapper.getCategories();
-      String numberStr = "Number of categories: " + categories.size();
+      initializeMainCategories();
 
       for (Category category : categories) {
-        if (category.getChannels() != null && category.getChannels().size() != 0) {
-          numberStr += "\nNumber of channels: " + category.getChannels().size();
-        }
-      }
-
-      for (Category category : categories) {
-        if (category.getChannels() != null && category.getChannels().size() != 0) {
-          for (Channel channel : category.getChannels()) {
-            numberStr += "\nName of the channel: " + channel.getName();
-            if (channel.getItems() != null && channel.getItems().size() != 0) {
-              for (Item item : channel.getItems()) {
-                numberStr += "\nItem Name: " + item.getName() + " | " + item.getDescription();
-              }
-            }
-          }
-        }
-      }
-      this.numbersTv.setText(numberStr);
-
-      setDrawer(categories);
-
-      /**
-       * DATABASE
-       */
-      dataBase = new FeedsDataSource(this);
-
-      // Clear database
-      dataBase.deleteAllCategories();
-      dataBase.deleteAllChannels();
-      dataBase.deleteAllItems();
-
-      String number = "";
-
-      // Insert
-      for (Category category : categories) {
-        // Insert category first
-        dataBase.insertCategory(category);
-
-        // Insert channel second
-        if (category.getChannels() != null && category.getChannels().size() != 0) {
-
-          for (Channel channel : category.getChannels()) {
-            channel.setCategoryId(category.getCategoryId());
-            dataBase.insertChannel(channel);
-
-
-            // Insert items third
-            if (channel.getItems() != null && channel.getItems().size() != 0) {
-
-              for (Item item : channel.getItems()) {
-                item.setCategoryId(category.getCategoryId());
-                item.setChannelId(channel.getChannelId());
-                dataBase.insertItem(item);
-              }
-
-            } else {
-              number += "\n No Items in the channel: " + channel.getName();
-            }
-
-          }
-
-          List<Channel> fetchedChannels = dataBase.getChannelsByCategoryId(category.getCategoryId
-              ());
-          /**
-           * FOR DEBUG
-           */
-          for (Channel channel : fetchedChannels) {
-            number += "\nName of the channel : " + channel.getName();
-          }
-
-          number += "\n\nNumber of channels for " + category.getName() + " : " + fetchedChannels
-              .size();
+        this.categoriesList.add(category);
+        if (category.getChannels() == null) {
+          this.channelsList.put(category, new ArrayList<Channel>());
         } else {
-          number += "\n\nNo channels";
+          this.channelsList.put(category, category.getChannels());
         }
       }
 
-      List<Category> fetchedCategories = dataBase.getCategories();
-      number += "\nNumber of categories: " + fetchedCategories.size();
-      List<Item> fetchedItems = dataBase.getAllItems();
-      number += "\n\nNumber of items: " + fetchedItems.size();
+      this.adapter = new ExpandableListAdapter(this, categoriesList, channelsList,
+          expandableListView, eventBus);
+      this.expandableListView.setAdapter(this.adapter);
+    }
+  }
 
-      for (Item item : fetchedItems) {
-        number += "\nItem: " + item.getTitle() + " - " + item.getPubDate().toString();
-      }
+  @Override
+  public void showAllItemsContent(List<Item> data) {
+    if (data != null && data.size() != 0) {
+      this.itemsAdapter = new ItemsAdapter(this, data);
+      this.itemsRecyclerView.setAdapter(itemsAdapter);
 
-      List<Item> starredItems = dataBase.getStarredItems(true);
-      number += "\n\nNumber of starred items: " + starredItems.size();
+      this.contentView.setVisibility(View.VISIBLE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.GONE);
+    } else {
+      this.emptyView.setText("No items");
+      this.contentView.setVisibility(View.GONE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.VISIBLE);
+    }
+  }
 
-      for (Item item : starredItems) {
-        number += "\nItem: " + item.getTitle() + " - " + item.getPubDate().toString();
-      }
+  @Override
+  public void showStarredItemsContent(List<Item> data) {
+    if (data != null && data.size() != 0) {
+      this.itemsAdapter = new ItemsAdapter(this, data);
+      this.itemsRecyclerView.setAdapter(itemsAdapter);
 
-      this.numbersTv.setText(number);
+      this.contentView.setVisibility(View.VISIBLE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.GONE);
+    } else {
+      this.emptyView.setText("No starred items.");
+      this.contentView.setVisibility(View.GONE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.VISIBLE);
+    }
+  }
 
+  @Override
+  public void showItemsByCategoryIdContent(List<Item> data) {
+    if (data != null && data.size() != 0) {
+      this.itemsAdapter = new ItemsAdapter(this, data);
+      this.itemsRecyclerView.setAdapter(itemsAdapter);
 
+      this.contentView.setVisibility(View.VISIBLE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.GONE);
+    } else {
+      this.emptyView.setText("No items in this category.");
+      this.contentView.setVisibility(View.GONE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @Override
+  public void showItemsByChannelIdContent(List<Item> data) {
+    if (data != null && data.size() != 0) {
+      this.itemsAdapter = new ItemsAdapter(this, data);
+      this.itemsRecyclerView.setAdapter(itemsAdapter);
+
+      this.contentView.setVisibility(View.VISIBLE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.GONE);
+    } else {
+      this.emptyView.setText("No items in this channel.");
+      this.contentView.setVisibility(View.GONE);
+      this.loadingView.setVisibility(View.GONE);
+      this.errorView.setVisibility(View.GONE);
+      this.emptyView.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @Override
+  public void showContent(CategoriesWrapper wrapper) {
+    if (wrapper.getCategories() != null && wrapper.getCategories().size() != 0) {
       this.contentView.setVisibility(View.VISIBLE);
       this.loadingView.setVisibility(View.GONE);
       this.errorView.setVisibility(View.GONE);
@@ -350,21 +408,5 @@ public class MainActivity extends AppCompatActivity implements MainView {
       this.errorView.setVisibility(View.GONE);
       this.emptyView.setVisibility(View.VISIBLE);
     }
-  }
-
-  private void setDrawer(List<Category> categories) {
-    if (categories != null)
-      for (Category category : categories) {
-        this.categoriesList.add(category);
-        if (category.getChannels() == null) {
-          this.channelsList.put(category, new ArrayList<Channel>());
-        } else {
-          this.channelsList.put(category, category.getChannels());
-        }
-      }
-
-    this.adapter = new ExpandableListAdapter(this, categoriesList, channelsList,
-        expandableListView, eventBus);
-    this.expandableListView.setAdapter(this.adapter);
   }
 }

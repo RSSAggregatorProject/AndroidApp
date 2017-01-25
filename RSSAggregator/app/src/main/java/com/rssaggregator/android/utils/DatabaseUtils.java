@@ -35,4 +35,32 @@ public class DatabaseUtils {
   public static final String LINK_ITEM = "link_item";
   public static final String READ_ITEM = "read_item";
   public static final String STARRED_ITEM = "starred_item";
+
+  /**
+   * DELETE queries
+   */
+  public static final String DELETE_ALL_CATEGORIES = "DELETE FROM " + DatabaseUtils.TABLE_CATEGORY;
+  public static final String DELETE_ALL_CHANNELS = "DELETE FROM " + DatabaseUtils.TABLE_CHANNEL;
+  public static final String DELETE_ALL_ITEMS = "DELETE FROM " + DatabaseUtils.TABLE_ITEM;
+
+  /**
+   * SELECT queries
+   */
+  public static final String SELECT_ALL_ITEMS = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+      + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  public static final String SELECT_STARRED_ITEMS = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+      + " WHERE " + DatabaseUtils.STARRED_ITEM + "=1 "
+      + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+
+  public static final String SELECT_ITEMS_BY_CATEGORY_ID(Integer categoryId) {
+    return "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+        + " WHERE " + DatabaseUtils.ID_CATEGORY + "= " + categoryId
+        + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  }
+
+  public static final String SELECT_ITEMS_BY_CHANNEL_ID(Integer channelId) {
+    return "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+        + " WHERE " + DatabaseUtils.ID_CHANNEL + "= " + channelId
+        + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  }
 }

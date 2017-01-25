@@ -12,14 +12,39 @@
 
     <string name="login_empty_email">Please fill the email field!</string>
     <string name="login_empty_password">Please fill the password field!</string>
-    <string name="title_activity_xx">XXActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-
     <!--NAVIGATION DRAWER -->
     <string name="category_all">All</string>
     <string name="category_star">Starred Items</string>
+    <string name="category_channel">%1$s / %2$s</string>
+
+    <!--ACTION -->
+    <string name="action_add_channel">Add a feed</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings for FormatterTime -->
+    <string name="future_time_formatter">In the future</string>
+    <string name="unknown_date_formatter">Unknown date</string>
+    <string name="now_time_formatter">Just now</string>
+    <plurals name="minute_time_formatter">
+        <item quantity="one">%1$d minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
+    </plurals>
+    <plurals name="hour_time_formatter">
+        <item quantity="one">%1$d hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
+    </plurals>
+    <string name="yesterday_time_formatter">Yesterday at %1$s</string>
+    <string name="at_time_formatter">%1$s at %2$s</string>
+    <string name="day_time_formatter">EEEE</string>
+    <string name="time_formatter">h:mm a</string>
+    <string name="month_time_formatter">MMMM d</string>
+    <string name="full_time_formatter">MMMM d, yyyy</string>
+    <string name="digital_date_formatter">MM/dd/yyyy</string>
+    <string name="full_date_formatter">EEEE, MMMM d, yyyy</string>
+
 </resources>

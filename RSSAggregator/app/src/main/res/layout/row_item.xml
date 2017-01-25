@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/rowItem"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/titleItem"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="70"
+            android:gravity="start|top"
+            android:padding="@dimen/keyline_16"
+            android:textColor="#512DA8"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Toyota lancera la nouvelle Supra sous la division Gazoo"
+            />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pubDateItem"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:gravity="top|end"
+            android:padding="@dimen/keyline_16"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            tools:text="Il y a 1 jour."
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/nameChannel"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical|start"
+            android:paddingBottom="@dimen/keyline_16"
+            android:paddingEnd="@dimen/keyline_8"
+            android:paddingStart="@dimen/keyline_16"
+            android:textColor="#FF9800"
+            tools:text="Caradisiac"
+            />
+
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/starItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:src="@drawable/ic_star_border"
+            app:srcCompat="@drawable/ic_star_border"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -14,6 +14,7 @@ import com.rssaggregator.android.login.adapter.ViewPagerAdapter;
 import com.rssaggregator.android.login.view.LoginFragment;
 import com.rssaggregator.android.login.view.SignUpFragment;
 import com.rssaggregator.android.utils.Globals;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +33,13 @@ public class LoginActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     this.resources = getResources();
+
+    /**
+     * Reset Shared Preferences
+     */
+    SharedPreferencesUtils.setApiToken(this, "");
+    SharedPreferencesUtils.setUserEmail(this, "");
+    SharedPreferencesUtils.setUserId(this, -1);
 
     /**
      * Get ids when user signs up.

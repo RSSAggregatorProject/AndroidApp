@@ -14,13 +14,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.MainActivity;
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.dependency.AppComponent;
 import com.rssaggregator.android.login.presenter.LoginPresenterImpl;
 import com.rssaggregator.android.network.model.AccessToken;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,6 +134,15 @@ public class LoginFragment extends Fragment implements LoginView {
   public void showErrorSnackbar(String errorMessage) {
     this.loginBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_SHORT).show();
+
+    /**
+     * TEMP
+     */
+    //TODO Remove this part.
+    SharedPreferencesUtils.setUserId(getActivity(), 1);
+    SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
+    SharedPreferencesUtils.setApiToken(getActivity(), "Token");
+
     Intent intent = new Intent(getActivity(), MainActivity.class);
     getActivity().startActivity(intent);
     getActivity().finish();
@@ -142,9 +151,14 @@ public class LoginFragment extends Fragment implements LoginView {
   @Override
   public void loginSuccessful(AccessToken accessToken) {
     this.loginBt.setProgress(100);
+
+    // Set Shared Preferences
+    SharedPreferencesUtils.setUserEmail(getActivity(), accessToken.getEmail());
+    SharedPreferencesUtils.setApiToken(getActivity(), accessToken.getToken());
+    SharedPreferencesUtils.setUserId(getActivity(), accessToken.getIdUser());
+
     Intent intent = new Intent(getActivity(), MainActivity.class);
     startActivity(intent);
     getActivity().finish();
-    Logger.e("Logged: " + accessToken.getToken() + " | " + accessToken.getEmail());
   }
 }

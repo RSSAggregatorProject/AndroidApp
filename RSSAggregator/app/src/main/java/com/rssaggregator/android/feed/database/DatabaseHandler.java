@@ -41,6 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       + DatabaseUtils.ID_CHANNEL + " INT NOT NULL, "
       + DatabaseUtils.ID_CATEGORY + " INT NOT NULL, "
       + DatabaseUtils.NAME_ITEM + " VARCHAR(255) NOT NULL, "
+      + DatabaseUtils.NAME_CHANNEL + " VARCHAR(255) NOT NULL, "
       + DatabaseUtils.TITLE_ITEM + " VARCHAR(255) NOT NULL, "
       + DatabaseUtils.DESCRIPTION_ITEM + " TEXT NOT NULL, "
       + DatabaseUtils.PUBDATE_ITEM + " DATE NOT NULL, "

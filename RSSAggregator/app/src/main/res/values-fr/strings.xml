@@ -19,5 +19,32 @@
     <!--NAVIGATION DRAWER -->
     <string name="category_all">Tous</string>
     <string name="category_star">Articles favoris</string>
+    <string name="category_channel">%1$s / %2$s</string>
+
+    <!--ACTION -->
+    <string name="action_add_channel">Ajouter un flux</string>
+    <string name="action_refresh">Rafraîchir</string>
+    <string name="action_settings">Paramètres</string>
+
+    <!-- String for FormatterTime -->
+    <string name="future_time_formatter">Dans le futur</string>
+    <string name="unknown_date_formatter">Date inconnue</string>
+    <string name="now_time_formatter">Maintenant</string>
+    <plurals name="minute_time_formatter">
+        <item quantity="one">Il y a %1$d minute</item>
+        <item quantity="other">Il y a %1$d minutes</item>
+    </plurals>
+    <plurals name="hour_time_formatter">
+        <item quantity="one">Il y a %1$d heure</item>
+        <item quantity="other">Il y a %1$d heures</item>
+    </plurals>
+    <string name="yesterday_time_formatter">Hier, à %1$s</string>
+    <string name="at_time_formatter">%1$s, à %2$s</string>
+    <string name="day_time_formatter">EEEE</string>
+    <string name="time_formatter">H:mm</string>
+    <string name="month_time_formatter">d MMMM</string>
+    <string name="full_time_formatter">d MMMM yyyy</string>
+    <string name="digital_date_formatter">dd/MM/yyyy</string>
+    <string name="full_date_formatter">EEEE, d MMMM, yyyy</string>
 
 </resources>

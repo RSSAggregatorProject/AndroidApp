@@ -6,6 +6,7 @@ public class Globals {
    * PREFERNCES KEYS
    */
   public static final String PREFERENCES_API_KEY = "preferences_api_key";
+  public static final String PREFERENCES_USER_EMAIL_KEY = "preferences_user_email_key";
   public static final String PREFERENCES_USER_ID_KEY = "preferences_user_id_key";
 
 
@@ -14,6 +15,7 @@ public class Globals {
    */
   private static final int SECOND = 1000;
   public static final int SPLASH_TIME = 3 * SECOND;
+  public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
   /**
    * EXTRA DATA
