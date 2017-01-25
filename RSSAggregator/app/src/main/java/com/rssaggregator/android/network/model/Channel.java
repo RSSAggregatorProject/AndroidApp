@@ -24,6 +24,8 @@ public class Channel {
   @Expose
   private List<Item> items;
 
+  private Integer categoryId;
+
   public Integer getChannelId() {
     return channelId;
   }
@@ -62,5 +64,13 @@ public class Channel {
 
   public void setItems(List<Item> items) {
     this.items = items;
+  }
+
+  public Integer getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Integer categoryId) {
+    this.categoryId = categoryId;
   }
 }

@@ -18,25 +18,27 @@ public class Item {
   private String title;
 
   @Expose
-  private String text;
+  private String description;
 
-  @SerializedName("url")
+  @SerializedName("link")
   @Expose
   private String linkUrl;
 
-  @SerializedName("date")
+  @SerializedName("pubDate")
   @Expose
   private Date pubDate;
 
   @SerializedName("id_feed")
   @Expose
-  private Integer feedId;
+  private Integer channelId;
 
   @Expose
   private boolean read;
 
   @Expose
   private boolean starred;
+
+  private Integer categoryId;
 
   public Integer getItemId() {
     return itemId;
@@ -62,12 +64,12 @@ public class Item {
     this.title = title;
   }
 
-  public String getText() {
-    return text;
+  public String getDescription() {
+    return description;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public String getLinkUrl() {
@@ -86,12 +88,12 @@ public class Item {
     this.pubDate = pubDate;
   }
 
-  public Integer getFeedId() {
-    return feedId;
+  public Integer getChannelId() {
+    return channelId;
   }
 
-  public void setFeedId(Integer feedId) {
-    this.feedId = feedId;
+  public void setChannelId(Integer channelId) {
+    this.channelId = channelId;
   }
 
   public boolean isRead() {
@@ -108,5 +110,13 @@ public class Item {
 
   public void setStarred(boolean starred) {
     this.starred = starred;
+  }
+
+  public Integer getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Integer categoryId) {
+    this.categoryId = categoryId;
   }
 }

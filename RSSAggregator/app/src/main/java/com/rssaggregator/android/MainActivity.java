@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.dependency.AppComponent;
+import com.rssaggregator.android.feed.database.FeedsDataSource;
 import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.feed.presenter.MainPresenterImpl;
 import com.rssaggregator.android.feed.view.MainView;
@@ -232,6 +233,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
   @Override
   public void showContent(CategoriesWrapper wrapper) {
+    /**
+     * DATABASE
+     */
+    FeedsDataSource dataBase = new FeedsDataSource(this);
+
     if (wrapper.getCategories() != null && wrapper.getCategories().size() != 0) {
       List<Category> categories = wrapper.getCategories();
       String numberStr = "Number of categories: " + categories.size();
@@ -248,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             numberStr += "\nName of the channel: " + channel.getName();
             if (channel.getItems() != null && channel.getItems().size() != 0) {
               for (Item item : channel.getItems()) {
-                numberStr += "\nItem Name: " + item.getName() + " | " + item.getText();
+                numberStr += "\nItem Name: " + item.getName() + " | " + item.getDescription();
               }
             }
           }
@@ -257,6 +263,81 @@ public class MainActivity extends AppCompatActivity implements MainView {
       this.numbersTv.setText(numberStr);
 
       setDrawer(categories);
+
+      /**
+       * DATABASE
+       */
+      dataBase = new FeedsDataSource(this);
+
+      // Clear database
+      dataBase.deleteAllCategories();
+      dataBase.deleteAllChannels();
+      dataBase.deleteAllItems();
+
+      String number = "";
+
+      // Insert
+      for (Category category : categories) {
+        // Insert category first
+        dataBase.insertCategory(category);
+
+        // Insert channel second
+        if (category.getChannels() != null && category.getChannels().size() != 0) {
+
+          for (Channel channel : category.getChannels()) {
+            channel.setCategoryId(category.getCategoryId());
+            dataBase.insertChannel(channel);
+
+
+            // Insert items third
+            if (channel.getItems() != null && channel.getItems().size() != 0) {
+
+              for (Item item : channel.getItems()) {
+                item.setCategoryId(category.getCategoryId());
+                item.setChannelId(channel.getChannelId());
+                dataBase.insertItem(item);
+              }
+
+            } else {
+              number += "\n No Items in the channel: " + channel.getName();
+            }
+
+          }
+
+          List<Channel> fetchedChannels = dataBase.getChannelsByCategoryId(category.getCategoryId
+              ());
+          /**
+           * FOR DEBUG
+           */
+          for (Channel channel : fetchedChannels) {
+            number += "\nName of the channel : " + channel.getName();
+          }
+
+          number += "\n\nNumber of channels for " + category.getName() + " : " + fetchedChannels
+              .size();
+        } else {
+          number += "\n\nNo channels";
+        }
+      }
+
+      List<Category> fetchedCategories = dataBase.getCategories();
+      number += "\nNumber of categories: " + fetchedCategories.size();
+      List<Item> fetchedItems = dataBase.getAllItems();
+      number += "\n\nNumber of items: " + fetchedItems.size();
+
+      for (Item item : fetchedItems) {
+        number += "\nItem: " + item.getTitle() + " - " + item.getPubDate().toString();
+      }
+
+      List<Item> starredItems = dataBase.getStarredItems(true);
+      number += "\n\nNumber of starred items: " + starredItems.size();
+
+      for (Item item : starredItems) {
+        number += "\nItem: " + item.getTitle() + " - " + item.getPubDate().toString();
+      }
+
+      this.numbersTv.setText(number);
+
 
       this.contentView.setVisibility(View.VISIBLE);
       this.loadingView.setVisibility(View.GONE);

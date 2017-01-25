@@ -10,13 +10,47 @@
           "id_feed": 1,
           "name": "Turbo.fr",
           "favicon_uri": "http://www.turbo.fr/favicon.ico",
-          "unread": 12
+          "unread": 12,
+          "items": [
+            {
+              "id_item": 0,
+              "name": "Nouveau Touareg 2017",
+              "title": "Nouveau Touareg 2017",
+              "description": "Voici le nouveau Touarge 2017. Pharses xenon bra bra",
+              "pubDate": "2017-01-25 00:00:00",
+              "link": "http://www.turbo.fr/",
+              "read": true,
+              "starred": false
+            },
+            {
+              "id_item": 1,
+              "name": "Audi RS6 Avant 2017",
+              "title": "Audi RS6 Avant 2017",
+              "description": "Sorti du nouveau Audi RS6 avant 2017",
+              "pubDate": "2017-01-24 00:00:00",
+              "link": "http://www.turbo.fr/",
+              "read": true,
+              "starred": true
+            }
+          ]
         },
         {
           "id_feed": 2,
           "name": "Caradisiac",
           "favicon_uri": "null",
-          "unread": 6
+          "unread": 6,
+          "items": [
+            {
+              "id_item": 0,
+              "name": "Test Review: Mazda MX-5 2017",
+              "title": "Test Review: Mazda MX-5 2017",
+              "description": "Test review du nouveau Mazda MX-5 SportBack",
+              "pubDate": "2017-01-23 00:00:00",
+              "link": "http://www.caradisiac.fr/",
+              "read": true,
+              "starred": true
+            }
+          ]
         }
       ]
     },
@@ -35,9 +69,9 @@
               "id_item": 1,
               "name": "Drogba a Marseille",
               "title": "Drogba à Marseille",
-              "text": "Petite nouvelle: Drogba va à l'OM pour 2€.",
-              "date": "2017-01-12 00:00:00",
-              "url": "http://www.eurosport.fr/",
+              "description": "Petite nouvelle: Drogba va à l'OM pour 2€.",
+              "pubDate": "2017-01-12 00:00:00",
+              "link": "http://www.eurosport.fr/",
               "read": false,
               "starred": false
             },
@@ -45,9 +79,9 @@
               "id_item": 2,
               "name": "Payet n'en fait qu'à sa tête",
               "title": "Payet n'en fait qu'à sa tête",
-              "text": "Payet fait la diva et veut jouer a l'OM",
-              "date": "2017-01-12 00:00:00",
-              "url": "http://www.eurosport.fr/",
+              "description": "Payet fait la diva et veut jouer a l'OM",
+              "pubDate": "2017-01-12 00:00:00",
+              "link": "http://www.eurosport.fr/",
               "read": false,
               "starred": false
             }
