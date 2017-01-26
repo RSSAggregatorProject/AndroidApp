@@ -6,20 +6,20 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.login.adapter.ViewPagerAdapter;
 import com.rssaggregator.android.login.view.LoginFragment;
 import com.rssaggregator.android.login.view.SignUpFragment;
+import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.Globals;
 import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
   @BindView(R.id.tabs) TabLayout tabs;
   @BindView(R.id.viewpager) ViewPager viewPager;

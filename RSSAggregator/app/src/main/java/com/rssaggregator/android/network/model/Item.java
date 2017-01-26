@@ -1,11 +1,14 @@
 package com.rssaggregator.android.network.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class Item {
+public class Item implements Parcelable {
 
   @SerializedName("id_item")
   @Expose
@@ -128,4 +131,54 @@ public class Item {
   public void setNameChannel(String nameChannel) {
     this.nameChannel = nameChannel;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeValue(this.itemId);
+    dest.writeString(this.name);
+    dest.writeString(this.title);
+    dest.writeString(this.description);
+    dest.writeString(this.linkUrl);
+    dest.writeLong(this.pubDate != null ? this.pubDate.getTime() : -1);
+    dest.writeValue(this.channelId);
+    dest.writeByte(this.read ? (byte) 1 : (byte) 0);
+    dest.writeByte(this.starred ? (byte) 1 : (byte) 0);
+    dest.writeValue(this.categoryId);
+    dest.writeString(this.nameChannel);
+  }
+
+  public Item() {
+  }
+
+  protected Item(Parcel in) {
+    this.itemId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.name = in.readString();
+    this.title = in.readString();
+    this.description = in.readString();
+    this.linkUrl = in.readString();
+    long tmpPubDate = in.readLong();
+    this.pubDate = tmpPubDate == -1 ? null : new Date(tmpPubDate);
+    this.channelId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.read = in.readByte() != 0;
+    this.starred = in.readByte() != 0;
+    this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
+    this.nameChannel = in.readString();
+  }
+
+  public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+    @Override
+    public Item createFromParcel(Parcel source) {
+      return new Item(source);
+    }
+
+    @Override
+    public Item[] newArray(int size) {
+      return new Item[size];
+    }
+  };
 }

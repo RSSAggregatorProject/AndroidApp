@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.rssaggregator.android.MainActivity;
 import com.rssaggregator.android.R;
@@ -12,10 +11,11 @@ import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.dependency.AppComponent;
 import com.rssaggregator.android.login.LoginActivity;
 import com.rssaggregator.android.splashscreen.presenter.SplashScreenPresenterImpl;
+import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.Globals;
 import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends BaseActivity {
 
   private AppComponent appComponent;
   private SplashScreenPresenterImpl presenter;

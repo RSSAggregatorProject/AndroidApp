@@ -7,7 +7,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -32,6 +31,7 @@ import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
+import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends BaseActivity implements MainView {
 
   // Navigation Drawer Views.
   @BindView(R.id.drawerLayout) DrawerLayout drawerLayout;
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     injectDependencies();
     initializeNavigationDrawer();
     this.presenter.loadAllData();
+    Logger.e("ON CREATE");
 
     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
     this.itemsRecyclerView.addItemDecoration(new DividerItemDecoration(this,

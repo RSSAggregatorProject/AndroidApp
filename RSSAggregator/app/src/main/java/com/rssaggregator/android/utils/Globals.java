@@ -22,5 +22,6 @@ public class Globals {
    */
   public static final String EXTRA_KEY_SIGNUP_USERNAME = "key_signup_username";
   public static final String EXTRA_KEY_SIGNUP_PASSWORD = "key_signup_password";
+  public static final String EXTRA_ITEM = "key_item";
 
 }
