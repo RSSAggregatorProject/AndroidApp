@@ -1,11 +1,8 @@
 package com.rssaggregator.android.login.presenter;
 
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.login.view.SignUpView;
 import com.rssaggregator.android.network.RssApi;
-import com.rssaggregator.android.network.event.LogInEvent;
 import com.rssaggregator.android.network.event.SignUpEvent;
-import com.rssaggregator.android.network.model.AccessToken;
 import com.rssaggregator.android.network.model.Credentials;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,11 +35,10 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     }
 
     Credentials credentials = new Credentials();
-    credentials.setLogin(userEmail);
+    credentials.setEmail(userEmail);
     credentials.setPassword(userPassword);
 
-//    this.rssApi.signUp(credentials);
-    this.rssApi.logIn(credentials);
+    this.rssApi.signUp(credentials);
   }
 
   @Override
@@ -64,21 +60,4 @@ public class SignUpPresenterImpl implements SignUpPresenter {
       }
     }
   }
-
-/*
-  @SuppressWarnings("UnusedDeclaration")
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onMessageEvent(LogInEvent event) {
-    if (event.isSuccess()) {
-      Logger.e("TOKEN: " + event.getData().getToken());
-      AccessToken accessToken = event.getData();
-      if (this.signUpView != null) {
-        this.signUpView.signUpSuccessful();
-      }
-    } else {
-      if (this.signUpView != null) {
-        this.signUpView.showErrorSnackbar(event.getThrowable().getMessage());
-      }
-    }
-  }*/
 }

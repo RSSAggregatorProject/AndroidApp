@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">RSS Aggregator</string>
 
+    <!--ACTIVITY NAME-->
+    <string name="add_feed_title_activity">Add a RSS Feed</string>
+
     <string name="login_tab_login">Login</string>
     <string name="login_tab_signup">Sign Up</string>
     <string name="login_email_hint">Email</string>

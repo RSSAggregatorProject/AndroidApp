@@ -53,6 +53,33 @@ public class FeedsDataSource {
     return rowId;
   }
 
+  /**
+   * Gets all the categories in the database.
+   *
+   * @return List of Category.
+   */
+  public List<Category> selectAllCategories() {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+
+    List<Category> categories = new ArrayList<Category>();
+    String selectQuery = DatabaseUtils.SELECT_ALL_CATEGORIES;
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Category category = new Category();
+        category.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        category.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
+        category.setUnread(c.getInt(c.getColumnIndex(DatabaseUtils.UNREAD_CATEGORY)));
+        categories.add(category);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return categories;
+  }
+
   public List<Category> getCategories() {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
 
@@ -111,6 +138,30 @@ public class FeedsDataSource {
     database.close();
 
     return rowId;
+  }
+
+  public List<Channel> selectChannelsByCategoryId(Integer categoryId) {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+
+    List<Channel> channels = new ArrayList<Channel>();
+    String selectQuery = DatabaseUtils.SELECT_CHANNELS_BY_CATEGORY_ID(categoryId);
+
+    Cursor c = database.rawQuery(selectQuery, null);
+
+    if (c.moveToFirst()) {
+      do {
+        Channel channel = new Channel();
+        channel.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
+        channel.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
+        channel.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        channel.setUnread(c.getInt(c.getColumnIndex(DatabaseUtils.UNREAD_CHANNEL)));
+        channel.setFaviconUri(c.getString(c.getColumnIndex(DatabaseUtils.FAVICON_URI_CHANNEL)));
+        channels.add(channel);
+      } while (c.moveToNext());
+    }
+    c.close();
+    database.close();
+    return channels;
   }
 
   public List<Channel> getChannelsByCategoryId(Integer categoryId) {

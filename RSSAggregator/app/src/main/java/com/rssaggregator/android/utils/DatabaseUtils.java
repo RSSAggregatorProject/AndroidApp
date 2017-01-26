@@ -46,6 +46,8 @@ public class DatabaseUtils {
   /**
    * SELECT queries
    */
+  public static final String SELECT_ALL_CATEGORIES = "SELECT * FROM "
+      + DatabaseUtils.TABLE_CATEGORY;
   public static final String SELECT_ALL_ITEMS = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
       + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
   public static final String SELECT_STARRED_ITEMS = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
@@ -62,5 +64,10 @@ public class DatabaseUtils {
     return "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
         + " WHERE " + DatabaseUtils.ID_CHANNEL + "= " + channelId
         + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  }
+
+  public static final String SELECT_CHANNELS_BY_CATEGORY_ID(Integer categoryId) {
+    return "SELECT * FROM " + DatabaseUtils.TABLE_CHANNEL
+        + " WHERE " + DatabaseUtils.ID_CATEGORY + "=" + categoryId;
   }
 }

@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">RSS Aggregator</string>
 
+    <!--ACTIVITY NAME-->
+    <string name="add_feed_title_activity">Ajouter un flux RSS</string>
+
     <!--LOGIN VIEWS-->
     <string name="login_tab_login">Connexion</string>
     <string name="login_tab_signup">Inscription</string>

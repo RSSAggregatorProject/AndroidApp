@@ -6,6 +6,7 @@ import com.rssaggregator.android.feed.database.FeedsDataSource;
 import com.rssaggregator.android.feed.view.MainView;
 import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.event.FetchDataEvent;
+import com.rssaggregator.android.network.event.UnsubscribeChannelEvent;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
@@ -15,6 +16,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,7 +62,41 @@ public class MainPresenterImpl implements MainPresenter {
       this.mainView.showLoading();
     }
 
-    this.rssApi.fetchData("authorization");
+    this.rssApi.fetchData();
+  }
+
+  @Override
+  public void loadAllDataOffLine() {
+    if (this.mainView != null) {
+      this.mainView.showLoading();
+    }
+
+    // Get categories
+    List<Category> returnedCategoryList = new ArrayList<>();
+    HashMap<Category, List<Channel>> returnedChannelList = new HashMap<>();
+
+    List<Category> categoryList = getCategories();
+    if (categoryList != null && categoryList.size() != 0) {
+
+      for (int i = 0; i < categoryList.size(); i++) {
+
+        List<Channel> channelList = getChannelsByCategoryId(categoryList.get(i).getCategoryId());
+
+        if (channelList != null && channelList.size() != 0) {
+          categoryList.get(i).setChannels(channelList);
+          returnedChannelList.put(categoryList.get(i), channelList);
+        } else {
+          categoryList.get(i).setChannels(new ArrayList<Channel>());
+          returnedChannelList.put(categoryList.get(i), new ArrayList<Channel>());
+        }
+
+        returnedCategoryList.add(categoryList.get(i));
+      }
+    }
+    this.mainView.setNavigationContentOffline(returnedCategoryList, returnedChannelList);
+
+    List<Item> data = getAllItemsFromDatabase();
+    this.mainView.showAllItemsContent(data);
   }
 
   @Override
@@ -100,6 +137,14 @@ public class MainPresenterImpl implements MainPresenter {
 
     List<Item> data = getItemsByChannelIdFrommDatabase(channelId);
     this.mainView.showItemsByChannelIdContent(data);
+  }
+
+  @Override
+  public void unsubscribeChannel(Channel channel) {
+    if (this.mainView != null) {
+      this.mainView.showLoading();
+    }
+    this.rssApi.unsubscribeFeed(channel.getChannelId());
   }
 
   //
@@ -217,6 +262,19 @@ public class MainPresenterImpl implements MainPresenter {
     return this.dataBase.selectItemsByChannelId(channelId);
   }
 
+  /**
+   * Gets categories from the database.
+   *
+   * @return List of Category.
+   */
+  private List<Category> getCategories() {
+    return this.dataBase.selectAllCategories();
+  }
+
+  private List<Channel> getChannelsByCategoryId(Integer categoryId) {
+    return this.dataBase.selectChannelsByCategoryId(categoryId);
+  }
+
   //
   //
   // Events methods.
@@ -233,9 +291,27 @@ public class MainPresenterImpl implements MainPresenter {
         fetchAllItems();
       }
     } else {
+      List<Item> offlineData = getAllItemsFromDatabase();
       if (this.mainView != null) {
-        this.mainView.showError(event.getThrowable().getMessage());
+        this.mainView.showAllItemsContent(offlineData);
+        this.mainView.showSnackBarError(event.getThrowable().getMessage());
       }
+      /*if (this.mainView != null) {
+        this.mainView.showError(event.getThrowable().getMessage());
+      }*/
+    }
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(UnsubscribeChannelEvent event) {
+    if (event.isSuccess()) {
+      if (this.mainView != null) {
+        this.mainView.unsubscribeChannelSuccess();
+        loadAllData();
+      }
+    } else {
+      this.mainView.showSnackBarError(event.getThrowable().getMessage());
     }
   }
 }

@@ -44,6 +44,7 @@ dependencies {
 
     // Network
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.squareup.okio:okio:1.11.0'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -87,5 +88,5 @@ dependencies {
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    testCompile "org.robolectric:robolectric:3.1.4"
+    testCompile "org.robolectric:robolectric:3.2.2"
 }

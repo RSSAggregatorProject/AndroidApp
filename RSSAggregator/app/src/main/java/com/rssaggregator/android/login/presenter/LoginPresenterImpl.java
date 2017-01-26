@@ -33,7 +33,7 @@ public class LoginPresenterImpl implements LoginPresenter {
   @Override
   public void logIn(String userEmail, String userPassword) {
     Credentials credentials = new Credentials();
-    credentials.setLogin(userEmail);
+    credentials.setEmail(userEmail);
     credentials.setPassword(userPassword);
 
     if (this.loginView != null) {
@@ -53,7 +53,7 @@ public class LoginPresenterImpl implements LoginPresenter {
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(LogInEvent event) {
     if (event.isSuccess()) {
-      Logger.e("TOKEN: " + event.getData().getToken());
+      Logger.e("TOKEN: " + event.getData().getApiToken());
       AccessToken accessToken = event.getData();
       if (this.loginView != null) {
         this.loginView.loginSuccessful(accessToken);

@@ -35,6 +35,8 @@ public class SignUpFragment extends Fragment implements SignUpView {
   private AppComponent appComponent;
   private SignUpPresenterImpl presenter;
 
+  private LoginActivity activity;
+
   public static SignUpFragment newInstance() {
     return new SignUpFragment();
   }
@@ -51,6 +53,7 @@ public class SignUpFragment extends Fragment implements SignUpView {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    this.activity = (LoginActivity) getActivity();
     this.signUpBt.setMode(ActionProcessButton.Mode.ENDLESS);
     this.signUpBt.setProgress(0);
     injectDependencies();
@@ -113,9 +116,11 @@ public class SignUpFragment extends Fragment implements SignUpView {
   @Override
   public void signUpSuccessful() {
     this.signUpBt.setProgress(100);
-    Intent intent = new Intent(getActivity(), LoginActivity.class);
+
+    Intent intent = new Intent(activity, LoginActivity.class);
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_USERNAME, emailEt.getText().toString());
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_PASSWORD, passwordEt.getText().toString());
+
     getActivity().finish();
     startActivity(intent);
   }

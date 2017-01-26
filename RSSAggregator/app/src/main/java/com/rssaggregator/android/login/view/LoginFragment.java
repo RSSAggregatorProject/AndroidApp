@@ -62,8 +62,8 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setProgress(0);
     injectDependencies();
 
-    this.emailEt.setText("ok");
-    this.passwordEt.setText("ok");
+    this.emailEt.setText("iralala");
+    this.passwordEt.setText("iralala");
   }
 
   @Override
@@ -139,13 +139,13 @@ public class LoginFragment extends Fragment implements LoginView {
      * TEMP
      */
     //TODO Remove this part.
-    SharedPreferencesUtils.setUserId(getActivity(), 1);
+/*    SharedPreferencesUtils.setUserId(getActivity(), 1);
     SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
     SharedPreferencesUtils.setApiToken(getActivity(), "Token");
 
     Intent intent = new Intent(getActivity(), MainActivity.class);
     getActivity().startActivity(intent);
-    getActivity().finish();
+    getActivity().finish();*/
   }
 
   @Override
@@ -153,9 +153,9 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setProgress(100);
 
     // Set Shared Preferences
-    SharedPreferencesUtils.setUserEmail(getActivity(), accessToken.getEmail());
-    SharedPreferencesUtils.setApiToken(getActivity(), accessToken.getToken());
-    SharedPreferencesUtils.setUserId(getActivity(), accessToken.getIdUser());
+    SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
+    SharedPreferencesUtils.setApiToken(getActivity(), accessToken.getApiToken());
+    SharedPreferencesUtils.setUserId(getActivity(), accessToken.getUserId());
 
     Intent intent = new Intent(getActivity(), MainActivity.class);
     startActivity(intent);

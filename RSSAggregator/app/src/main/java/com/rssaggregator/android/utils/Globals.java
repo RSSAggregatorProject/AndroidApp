@@ -3,6 +3,11 @@ package com.rssaggregator.android.utils;
 public class Globals {
 
   /**
+   * API urls.
+   */
+  public static final String API_URL = "http://dreamteamrssfeader.ddns.net:8080/rssserver/";
+
+  /**
    * PREFERNCES KEYS
    */
   public static final String PREFERENCES_API_KEY = "preferences_api_key";

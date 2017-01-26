@@ -16,4 +16,10 @@
         android:title="@string/action_add_channel"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_unsubscribe"
+        android:title="Unsubscirnbe"
+        android:visible="false"
+        app:showAsAction="never" />
+
 </menu>

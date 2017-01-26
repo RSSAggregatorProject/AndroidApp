@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/keyline_48"
+              android:layout_marginEnd="@dimen/keyline_16"
+              android:layout_marginStart="@dimen/keyline_72"
+              android:orientation="vertical"
+              app:layout_collapseMode="parallax"
+    >
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/keyline_48"
+        android:layout_marginTop="@dimen/keyline_16"
+        android:text="@string/add_feed_title_activity"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/keyline_8"
+        >
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/rssLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rss Feed"
+            android:inputType="textLongMessage"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+
+</LinearLayout>
