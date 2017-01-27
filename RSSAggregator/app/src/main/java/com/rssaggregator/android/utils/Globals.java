@@ -29,4 +29,12 @@ public class Globals {
   public static final String EXTRA_KEY_SIGNUP_PASSWORD = "key_signup_password";
   public static final String EXTRA_ITEM = "key_item";
 
+  /**
+   * Types
+   */
+  public static final int LIST_ALL_ITEMS_TYPE = 0;
+  public static final int LIST_STAR_ITEMS_TYPE = 1;
+  public static final int LIST_CATEGORY_ITEMS_TYPE = 2;
+  public static final int LIST_CHANNEL_ITEMS_TYPE = 3;
+
 }

@@ -420,6 +420,34 @@ public class FeedsDataSource {
     return items;
   }
 
+  public long updateReadStateItem(Item item, boolean state) {
+    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
+    String whereClauseStr = DatabaseUtils.ID_ITEM + "=" + item.getItemId()
+        + " AND " + DatabaseUtils.ID_CATEGORY + "=" + item.getCategoryId()
+        + " AND " + DatabaseUtils.ID_CHANNEL + "=" + item.getChannelId();
+
+    ContentValues values = new ContentValues();
+    values.put(DatabaseUtils.READ_ITEM, state);
+
+    long rowId = database.update(DatabaseUtils.TABLE_ITEM, values, whereClauseStr, null);
+
+    return rowId;
+  }
+
+  public long updateStarStateItem(Item item, boolean state) {
+    SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
+    String whereClauseStr = DatabaseUtils.ID_ITEM + "=" + item.getItemId()
+        + " AND " + DatabaseUtils.ID_CATEGORY + "=" + item.getCategoryId()
+        + " AND " + DatabaseUtils.ID_CHANNEL + "=" + item.getChannelId();
+
+    ContentValues values = new ContentValues();
+    values.put(DatabaseUtils.STARRED_ITEM, state);
+
+    long rowId = database.update(DatabaseUtils.TABLE_ITEM, values, whereClauseStr, null);
+
+    return rowId;
+  }
+
   /**
    * Deletes all rows in the Item table.
    */

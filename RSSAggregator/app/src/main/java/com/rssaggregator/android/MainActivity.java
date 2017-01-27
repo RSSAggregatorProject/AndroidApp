@@ -40,6 +40,7 @@ import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
 import com.rssaggregator.android.network.utils.TokenRequestInterceptor;
 import com.rssaggregator.android.utils.BaseActivity;
+import com.rssaggregator.android.utils.Globals;
 import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,6 +57,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements MainView {
+
+  private int LIST_ITEMS_TYPE;
 
   // Navigation Drawer Views.
   @BindView(R.id.drawerLayout) DrawerLayout drawerLayout;
@@ -79,6 +82,7 @@ public class MainActivity extends BaseActivity implements MainView {
   // Data
   private List<Category> categoriesList;
   private HashMap<Category, List<Channel>> channelsList;
+  private Category selectedCategory = null;
   private Channel selectedChannel = null;
 
   // Network
@@ -87,7 +91,10 @@ public class MainActivity extends BaseActivity implements MainView {
 
   // Others
   private Resources resources;
+
+  // Menu Item
   private MenuItem unsubscribeItem;
+  private MenuItem markAsReadItem;
 
   //
   //
@@ -135,6 +142,22 @@ public class MainActivity extends BaseActivity implements MainView {
   }
 
   @Override
+  protected void onRestart() {
+    super.onRestart();
+    if (LIST_ITEMS_TYPE == Globals.LIST_ALL_ITEMS_TYPE) {
+      this.presenter.fetchAllItems();
+    } else if (LIST_ITEMS_TYPE == Globals.LIST_STAR_ITEMS_TYPE) {
+      this.presenter.fetchStarredItems();
+    } else if (LIST_ITEMS_TYPE == Globals.LIST_CATEGORY_ITEMS_TYPE) {
+      this.presenter.fetchItemsByCategoryId(selectedCategory.getCategoryId());
+    } else if (LIST_ITEMS_TYPE == Globals.LIST_CHANNEL_ITEMS_TYPE) {
+      this.presenter.fetchItemsByChannelId(selectedChannel.getChannelId());
+    }
+
+    Logger.e("RESTART ACTIVITY");
+  }
+
+  @Override
   protected void onDestroy() {
     this.presenter.onDestroy();
     super.onDestroy();
@@ -154,6 +177,8 @@ public class MainActivity extends BaseActivity implements MainView {
     getMenuInflater().inflate(R.menu.menu_main, menu);
     this.unsubscribeItem = menu.findItem(R.id.action_unsubscribe);
     this.unsubscribeItem.setVisible(false);
+    this.markAsReadItem = menu.findItem(R.id.action_mark_as_read);
+    this.markAsReadItem.setVisible(true);
     return true;
   }
 
@@ -178,6 +203,12 @@ public class MainActivity extends BaseActivity implements MainView {
         this.presenter.unsubscribeChannel(selectedChannel);
       } else {
         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+      }
+    } else if (id == R.id.action_mark_as_read) {
+      if (LIST_ITEMS_TYPE == Globals.LIST_ALL_ITEMS_TYPE) {
+        this.presenter.updateReadAllItems();
+      } else if (LIST_ITEMS_TYPE == Globals.LIST_CHANNEL_ITEMS_TYPE) {
+        this.presenter.updateReadItemsByChannelId(selectedChannel);
       }
     }
     return super.onOptionsItemSelected(item);
@@ -293,7 +324,9 @@ public class MainActivity extends BaseActivity implements MainView {
      * Click on All category.
      */
     if (event.isAll()) {
+      this.LIST_ITEMS_TYPE = Globals.LIST_ALL_ITEMS_TYPE;
       this.unsubscribeItem.setVisible(false);
+      this.markAsReadItem.setVisible(true);
       if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle(getString(R.string.category_all));
         this.presenter.fetchAllItems();
@@ -304,7 +337,9 @@ public class MainActivity extends BaseActivity implements MainView {
      * Click on Starred Items category.
      */
     if (event.isStar()) {
+      this.LIST_ITEMS_TYPE = Globals.LIST_STAR_ITEMS_TYPE;
       this.unsubscribeItem.setVisible(false);
+      this.markAsReadItem.setVisible(false);
       if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle(getString(R.string.category_star));
         this.presenter.fetchStarredItems();
@@ -315,8 +350,11 @@ public class MainActivity extends BaseActivity implements MainView {
      * Click on a Category.
      */
     if (event.getChannel() == null) {
+      this.LIST_ITEMS_TYPE = Globals.LIST_CATEGORY_ITEMS_TYPE;
       this.unsubscribeItem.setVisible(false);
+      this.markAsReadItem.setVisible(false);
       Category category = event.getCategory();
+      this.selectedCategory = category;
       if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle(category.getName());
       }
@@ -325,10 +363,13 @@ public class MainActivity extends BaseActivity implements MainView {
       /**
        * Click on a Channel.
        */
+      this.LIST_ITEMS_TYPE = Globals.LIST_CHANNEL_ITEMS_TYPE;
       this.unsubscribeItem.setVisible(true);
+      this.markAsReadItem.setVisible(true);
       Category category = event.getCategory();
       Channel channel = event.getChannel();
       this.selectedChannel = channel;
+      this.selectedCategory = category;
       if (getSupportActionBar() != null) {
         getSupportActionBar().setTitle(resources.getString(R.string.category_channel,
             channel.getName(), category.getName()));
@@ -412,7 +453,9 @@ public class MainActivity extends BaseActivity implements MainView {
 
   @Override
   public void showAllItemsContent(List<Item> data) {
+    this.LIST_ITEMS_TYPE = Globals.LIST_ALL_ITEMS_TYPE;
     this.unsubscribeItem.setVisible(false);
+    this.markAsReadItem.setVisible(true);
     if (data != null && data.size() != 0) {
       this.itemsAdapter = new ItemsAdapter(this, data);
       this.itemsRecyclerView.setAdapter(itemsAdapter);

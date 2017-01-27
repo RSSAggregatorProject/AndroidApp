@@ -7,6 +7,8 @@ import com.rssaggregator.android.feed.view.MainView;
 import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.event.FetchDataEvent;
 import com.rssaggregator.android.network.event.UnsubscribeChannelEvent;
+import com.rssaggregator.android.network.event.UpdateReadAllItemsEvent;
+import com.rssaggregator.android.network.event.UpdateReadItemsByChannelIdEvent;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
@@ -27,6 +29,7 @@ public class MainPresenterImpl implements MainPresenter {
   private EventBus eventBus;
   private MainView mainView;
   private FeedsDataSource dataBase;
+  private Integer channelId;
 
   @Inject
   public MainPresenterImpl(RssApi rssApi, EventBus eventBus) {
@@ -145,6 +148,17 @@ public class MainPresenterImpl implements MainPresenter {
       this.mainView.showLoading();
     }
     this.rssApi.unsubscribeFeed(channel.getChannelId());
+  }
+
+  @Override
+  public void updateReadAllItems() {
+    this.rssApi.updateReadAllItems();
+  }
+
+  @Override
+  public void updateReadItemsByChannelId(Channel selectedChannel) {
+    this.channelId = selectedChannel.getChannelId();
+    this.rssApi.updateReadItemsByChannelId(selectedChannel);
   }
 
   //
@@ -275,6 +289,26 @@ public class MainPresenterImpl implements MainPresenter {
     return this.dataBase.selectChannelsByCategoryId(categoryId);
   }
 
+  private void updateReadAllItemsFromDatabase() {
+    List<Item> items = getAllItemsFromDatabase();
+
+    if (items != null && items.size() != 0) {
+      for (Item item : items) {
+        this.dataBase.updateReadStateItem(item, true);
+      }
+    }
+  }
+
+  private void updateReadItemsByChannelIdFromDatabase(Integer channelId) {
+    List<Item> items = getItemsByChannelIdFrommDatabase(channelId);
+
+    if (items != null && items.size() != 0) {
+      for (Item item : items) {
+        this.dataBase.updateReadStateItem(item, true);
+      }
+    }
+  }
+
   //
   //
   // Events methods.
@@ -309,6 +343,33 @@ public class MainPresenterImpl implements MainPresenter {
       if (this.mainView != null) {
         this.mainView.unsubscribeChannelSuccess();
         loadAllData();
+      }
+    } else {
+      this.mainView.showSnackBarError(event.getThrowable().getMessage());
+    }
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(UpdateReadAllItemsEvent event) {
+    if (event.isSuccess()) {
+      if (this.mainView != null) {
+        this.updateReadAllItemsFromDatabase();
+        this.fetchAllItems();
+      }
+    } else {
+      this.mainView.showSnackBarError(event.getThrowable().getMessage());
+    }
+  }
+
+  @SuppressWarnings("UnusedDeclaration")
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(UpdateReadItemsByChannelIdEvent event) {
+    if (event.isSuccess()) {
+      if (this.mainView != null) {
+        this.updateReadItemsByChannelIdFromDatabase(this.channelId);
+        this.fetchItemsByChannelId(this.channelId);
+        this.channelId = null;
       }
     } else {
       this.mainView.showSnackBarError(event.getThrowable().getMessage());

@@ -4,6 +4,7 @@ import com.rssaggregator.android.MainActivity;
 import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.addfeed.presenter.AddFeedPresenterImpl;
 import com.rssaggregator.android.feed.presenter.MainPresenterImpl;
+import com.rssaggregator.android.feeddetails.presenter.ItemDetailsPresenterImpl;
 import com.rssaggregator.android.login.presenter.LoginPresenterImpl;
 import com.rssaggregator.android.login.presenter.SignUpPresenterImpl;
 import com.rssaggregator.android.network.RssApi;
@@ -38,6 +39,8 @@ public interface AppComponent {
   MainPresenterImpl mainPresenterImpl();
 
   AddFeedPresenterImpl addFeedPresenterImpl();
+
+  ItemDetailsPresenterImpl itemDetailsPresenterImpl();
 
   void inject(MainActivity mainActivity);
 }

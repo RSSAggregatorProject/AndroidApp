@@ -28,6 +28,9 @@
     <string name="action_add_channel">Ajouter un flux</string>
     <string name="action_refresh">Rafraîchir</string>
     <string name="action_settings">Paramètres</string>
+    <string name="action_unsubscribe_channel">Désinscrire du flux RSS</string>
+    <string name="action_mark_as_read">Mettre articles en état lu</string>
+    <string name="action_star_item">Sauvegarder l\'article</string>
 
     <!-- String for FormatterTime -->
     <string name="future_time_formatter">Dans le futur</string>

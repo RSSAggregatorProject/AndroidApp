@@ -16,12 +16,19 @@ import com.rssaggregator.android.network.event.LogInEvent;
 import com.rssaggregator.android.network.event.LogOutEvent;
 import com.rssaggregator.android.network.event.SignUpEvent;
 import com.rssaggregator.android.network.event.UnsubscribeChannelEvent;
+import com.rssaggregator.android.network.event.UpdateReadAllItemsEvent;
+import com.rssaggregator.android.network.event.UpdateReadItemsByChannelIdEvent;
+import com.rssaggregator.android.network.event.UpdateReadStateItemEvent;
+import com.rssaggregator.android.network.event.UpdateStarStateItemEvent;
 import com.rssaggregator.android.network.model.AccessToken;
 import com.rssaggregator.android.network.model.AddCategoryWrapper;
 import com.rssaggregator.android.network.model.AddFeedWrapper;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
+import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Credentials;
+import com.rssaggregator.android.network.model.Item;
+import com.rssaggregator.android.network.model.ItemStateWrapper;
 import com.rssaggregator.android.network.utils.DateDeserializer;
 import com.rssaggregator.android.network.utils.TokenRequestInterceptor;
 
@@ -122,8 +129,8 @@ public class RssApiImpl implements RssApi {
            * TEMP
            */
           try {
-            String json = response.errorBody().string();
-            ApiError error = new Gson().fromJson(json, ApiError.class);
+/*            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);*/
 
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.excludeFieldsWithoutExposeAnnotation();
@@ -218,6 +225,84 @@ public class RssApiImpl implements RssApi {
       }
     });
   }
+
+  //
+  //
+  // Update read methods.
+  //
+  //
+
+  @Override
+  public void updateReadAllItems() {
+    ItemStateWrapper wrapper = new ItemStateWrapper(true, null);
+    this.restService.updateReadAllItems(wrapper).enqueue(new Callback<Void>() {
+      @Override
+      public void onResponse(Call<Void> call, Response<Void> response) {
+        eventBus.post(new UpdateReadAllItemsEvent());
+      }
+
+      @Override
+      public void onFailure(Call<Void> call, Throwable t) {
+        eventBus.post(new UpdateReadAllItemsEvent(t));
+      }
+    });
+  }
+
+  @Override
+  public void updateReadItemsByChannelId(Channel channel) {
+    ItemStateWrapper wrapper = new ItemStateWrapper(true, null);
+    this.restService.updateReadItemsByChannelId(channel.getChannelId(), wrapper)
+        .enqueue(new Callback<Void>() {
+
+          @Override
+          public void onResponse(Call<Void> call, Response<Void> response) {
+            eventBus.post(new UpdateReadItemsByChannelIdEvent());
+          }
+
+          @Override
+          public void onFailure(Call<Void> call, Throwable t) {
+            eventBus.post(new UpdateReadItemsByChannelIdEvent(t));
+          }
+        });
+  }
+
+  @Override
+  public void updateReadStateItem(Item item, Boolean state) {
+    ItemStateWrapper wrapper = new ItemStateWrapper(state, null);
+    this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
+      @Override
+      public void onResponse(Call<Void> call, Response<Void> response) {
+        eventBus.post(new UpdateReadStateItemEvent());
+      }
+
+      @Override
+      public void onFailure(Call<Void> call, Throwable t) {
+        eventBus.post(new UpdateReadStateItemEvent(t));
+      }
+    });
+  }
+
+  @Override
+  public void updateStarStateItem(Item item, Boolean state) {
+    ItemStateWrapper wrapper = new ItemStateWrapper(null, state);
+    this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
+      @Override
+      public void onResponse(Call<Void> call, Response<Void> response) {
+        eventBus.post(new UpdateStarStateItemEvent());
+      }
+
+      @Override
+      public void onFailure(Call<Void> call, Throwable t) {
+        eventBus.post(new UpdateStarStateItemEvent(t));
+      }
+    });
+  }
+
+  //
+  //
+  // Event methods
+  //
+  //
 
   @SuppressWarnings("UnusedDeclaration")
   @Subscribe(threadMode = ThreadMode.MAIN)
