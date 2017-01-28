@@ -71,6 +71,8 @@
     <string name="add_category">Add a category</string>
     <string name="create_category_empty_field">Please fill the category field!</string>
 
+    <string name="item_details_null">Error when fetching the article.</string>
+
     <!--MISC-->
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>

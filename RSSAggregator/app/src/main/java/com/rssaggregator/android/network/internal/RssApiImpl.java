@@ -385,34 +385,86 @@ public class RssApiImpl implements RssApi {
         });
   }
 
+  /**
+   * Updates the Read State.
+   *
+   * @param item  Item to update
+   * @param state New read state.
+   */
   @Override
   public void updateReadStateItem(Item item, Boolean state) {
     ItemStateWrapper wrapper = new ItemStateWrapper(state, null);
     this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new UpdateReadStateItemEvent());
+        if (response.isSuccessful()) {
+          eventBus.post(new UpdateReadStateItemEvent());
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new UpdateReadStateItemEvent(new Throwable(error
+                .getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new UpdateReadStateItemEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new UpdateReadStateItemEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new UpdateReadStateItemEvent(t));
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new UpdateReadStateItemEvent(throwable));
+        } else {
+          eventBus.post(new UpdateReadStateItemEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Updates the Star State.
+   *
+   * @param item  Item to update
+   * @param state The new state to update.
+   */
   @Override
   public void updateStarStateItem(Item item, Boolean state) {
     ItemStateWrapper wrapper = new ItemStateWrapper(null, state);
     this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new UpdateStarStateItemEvent());
+        if (response.isSuccessful()) {
+          eventBus.post(new UpdateStarStateItemEvent());
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new UpdateStarStateItemEvent(new Throwable(error
+                .getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new UpdateStarStateItemEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new UpdateStarStateItemEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new UpdateStarStateItemEvent(t));
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new UpdateStarStateItemEvent(throwable));
+        } else {
+          eventBus.post(new UpdateStarStateItemEvent(new Throwable("Error")));
+        }
       }
     });
   }

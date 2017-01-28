@@ -15,6 +15,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
+/**
+ * Presenter for Item Details View.
+ */
 public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
@@ -46,12 +49,23 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
     this.eventBus.unregister(this);
   }
 
+  /**
+   * Updates the read state to true.
+   *
+   * @param item Item to update.
+   */
   @Override
   public void updateReadItem(Item item) {
     this.item = item;
+    updateReadItemById_Database(this.item);
     this.rssApi.updateReadStateItem(item, true);
   }
 
+  /**
+   * Updates the star state
+   *
+   * @param item Item to update.
+   */
   @Override
   public void updateStarStateItem(Item item) {
     this.item = item;
@@ -63,11 +77,21 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
     }
   }
 
-  private void updateReadItemByIdFromDatabase(Item item) {
+  /**
+   * Updates the read state item in the database
+   *
+   * @param item Item to update.
+   */
+  private void updateReadItemById_Database(Item item) {
     this.dataBase.updateReadStateItem(item, true);
   }
 
-  private void updateStarItemByIdFromDatabase(Item item) {
+  /**
+   * Updates the star state item in the database.
+   *
+   * @param item Item to update.
+   */
+  private void updateStarItemById_Database(Item item) {
     if (this.item.isStarred()) {
       this.dataBase.updateStarStateItem(item, false);
     } else {
@@ -80,11 +104,14 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   public void onMessageEvent(UpdateReadStateItemEvent event) {
     if (event.isSuccess()) {
       if (this.itemDetailsView != null) {
-        updateReadItemByIdFromDatabase(this.item);
+        updateReadItemById_Database(this.item);
         this.item = null;
         this.itemDetailsView.updateItemRead();
       }
     } else {
+      updateReadItemById_Database(this.item);
+      this.item = null;
+      this.itemDetailsView.updateItemRead();
       this.itemDetailsView.showSnackBarError(event.getThrowable().getMessage());
     }
   }
@@ -94,7 +121,7 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   public void onMessageEvent(UpdateStarStateItemEvent event) {
     if (event.isSuccess()) {
       if (this.itemDetailsView != null) {
-        updateStarItemByIdFromDatabase(this.item);
+        updateStarItemById_Database(this.item);
         this.itemDetailsView.updateItemStarred(this.item.isStarred());
         this.item = null;
       }

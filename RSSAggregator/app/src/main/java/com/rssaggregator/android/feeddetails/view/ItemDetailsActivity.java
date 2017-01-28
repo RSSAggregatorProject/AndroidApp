@@ -8,12 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.Toast;
+import android.widget.ScrollView;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
@@ -31,8 +32,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Activity for Item Details View.
+ */
 public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView {
 
+  @BindView(R.id.rootView) ScrollView rootViewSv;
   @BindView(R.id.titleItem) AppCompatTextView titleItemTv;
   @BindView(R.id.pubDateItem) AppCompatTextView pubDateItemTv;
   @BindView(R.id.nameChannelItem) AppCompatTextView nameChannelItemTv;
@@ -56,13 +61,21 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
       this.item = extras.getParcelable(Globals.EXTRA_ITEM);
     }
 
-    initializeViews();
+    if (this.item != null) {
+      initializeViews();
+    } else {
+      Snackbar.make(this.rootViewSv, getString(R.string.item_details_null),
+          Snackbar.LENGTH_SHORT).show();
+    }
 
     if (this.item != null) {
       this.presenter.updateReadItem(this.item);
     }
   }
 
+  /**
+   * Injects dependencies.
+   */
   private void injectDependencies() {
     AppComponent appComponent = RssAggregatorApplication.get(this).getAppComponent();
     this.presenter = appComponent.itemDetailsPresenterImpl();
@@ -70,6 +83,9 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
     this.presenter.setDatabase(this);
   }
 
+  /**
+   * Initializes the view.
+   */
   private void initializeViews() {
     // Set title app bar
     if (getSupportActionBar() != null) {
@@ -128,11 +144,19 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
     super.onDestroy();
   }
 
+  /**
+   * Updates the item after a updateReadState succeed.
+   */
   @Override
   public void updateItemRead() {
     this.item.setRead(true);
   }
 
+  /**
+   * Updates the item after a updateStarState succeed.
+   *
+   * @param oldState old state before the request.
+   */
   @Override
   public void updateItemStarred(Boolean oldState) {
     if (oldState) {
@@ -146,7 +170,7 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
 
   @Override
   public void showSnackBarError(String errorMessage) {
-    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+    Snackbar.make(this.rootViewSv, errorMessage, Snackbar.LENGTH_LONG).show();
   }
 
   //
@@ -177,7 +201,6 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
     builder.setCloseButtonIcon(BitmapFactory.decodeResource(
         getResources(), R.drawable.ic_arrow_back_white_24dp));
 
-
     CustomTabsIntent customTabsIntent = builder.build();
 
     CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse(item.getLinkUrl()),
@@ -188,6 +211,5 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
             activity.startActivity(intent);
           }
         });
-    //customTabsIntent.launchUrl(this, Uri.parse(item.getLinkUrl()));
   }
 }
