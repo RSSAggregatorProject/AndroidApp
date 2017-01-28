@@ -70,4 +70,7 @@ public class DatabaseUtils {
     return "SELECT * FROM " + DatabaseUtils.TABLE_CHANNEL
         + " WHERE " + DatabaseUtils.ID_CATEGORY + "=" + categoryId;
   }
+
+  public static final String SELECT_UNREAD_ITEMS = "SELECT * FROM " + TABLE_ITEM
+      + " WHERE " + DatabaseUtils.READ_ITEM + "=0";
 }

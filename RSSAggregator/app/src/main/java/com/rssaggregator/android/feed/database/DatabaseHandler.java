@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.rssaggregator.android.utils.DatabaseUtils;
 
-
+/**
+ * Handler class for Database SQLite of Android.
+ */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
   // Database version
@@ -19,7 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       + " ( "
       + DatabaseUtils.ID_CATEGORY + " INT NOT NULL, "
       + DatabaseUtils.NAME_CATEGORY + " VARCHAR(255) NOT NULL, "
-      + DatabaseUtils.UNREAD_CATEGORY + " INT NOT NULL, "
+      + DatabaseUtils.UNREAD_CATEGORY + " INT, "
       + "PRIMARY KEY (" + DatabaseUtils.ID_CATEGORY + ")"
       + ");";
 
@@ -28,7 +30,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       + DatabaseUtils.ID_CHANNEL + " INT NOT NULL, "
       + DatabaseUtils.ID_CATEGORY + " INT NOT NULL, "
       + DatabaseUtils.NAME_CHANNEL + " VARCHAR(255) NOT NULL, "
-      + DatabaseUtils.UNREAD_CHANNEL + " INT NOT NULL, "
+      + DatabaseUtils.NAME_CATEGORY + " VARCHAR(255) NOT NULL, "
+      + DatabaseUtils.UNREAD_CHANNEL + " INT, "
       + DatabaseUtils.FAVICON_URI_CHANNEL + " VARCHAR(255), "
       + "PRIMARY KEY (" + DatabaseUtils.ID_CHANNEL + ", " + DatabaseUtils.ID_CATEGORY + "), "
       + "FOREIGN KEY (" + DatabaseUtils.ID_CATEGORY + ") "
@@ -40,8 +43,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       + DatabaseUtils.ID_ITEM + " INT NOT NULL, "
       + DatabaseUtils.ID_CHANNEL + " INT NOT NULL, "
       + DatabaseUtils.ID_CATEGORY + " INT NOT NULL, "
-      + DatabaseUtils.NAME_ITEM + " VARCHAR(255) NOT NULL, "
       + DatabaseUtils.NAME_CHANNEL + " VARCHAR(255) NOT NULL, "
+      + DatabaseUtils.NAME_CATEGORY + " VARCHAR(255) NOT NULL, "
       + DatabaseUtils.TITLE_ITEM + " VARCHAR(255) NOT NULL, "
       + DatabaseUtils.DESCRIPTION_ITEM + " TEXT NOT NULL, "
       + DatabaseUtils.PUBDATE_ITEM + " DATE NOT NULL, "

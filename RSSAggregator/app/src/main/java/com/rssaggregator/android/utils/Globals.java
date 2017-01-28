@@ -14,6 +14,10 @@ public class Globals {
   public static final String PREFERENCES_USER_EMAIL_KEY = "preferences_user_email_key";
   public static final String PREFERENCES_USER_ID_KEY = "preferences_user_id_key";
 
+  /**
+   * ACTIVITY_CODE
+   */
+  public static final int ADD_FEED_ACTIVITY = 23;
 
   /**
    * TIME

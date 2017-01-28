@@ -53,4 +53,26 @@
     <string name="digital_date_formatter">MM/dd/yyyy</string>
     <string name="full_date_formatter">EEEE, MMMM d, yyyy</string>
 
+    <!--ERROR MESSAGES-->
+    <string name="unknown_error">Unknown error</string>
+    <string name="network_error">Please check your network connection</string>
+    <string name="empty_items">No items in this category</string>
+    <string name="empty_star_items">No starred items. Stars some ones!</string>
+    <string name="empty_channel_items">No items in this channel</string>
+
+    <string name="unsubscribe_feed_success">You are unsubscribed to the channel!\n
+    Update of the view!</string>
+
+    <!--ADD FEEDS-->
+    <string name="add_feed_success">You are now subscribed to the feed!</string>
+    <string name="create_new_category">Create a new category</string>
+    <string name="add_feed_rss_field_empty">Please fill the RSS link field!</string>
+    <string name="add_feed_category_error">Please select a valid category!</string>
+    <string name="add_category">Add a category</string>
+    <string name="create_category_empty_field">Please fill the category field!</string>
+
+    <!--MISC-->
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

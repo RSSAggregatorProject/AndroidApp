@@ -53,4 +53,21 @@
     <string name="digital_date_formatter">dd/MM/yyyy</string>
     <string name="full_date_formatter">EEEE, d MMMM, yyyy</string>
 
+    <!--ERROR MESSAGES-->
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="network_error">Vérifiez votre connexion Internet</string>
+    <string name="empty_items">Pas d\'articles dans cette catégorie.</string>
+    <string name="empty_star_items">Pas d\'articles sauvegardés. Sauvegardez en quelques
+        uns</string>
+    <string name="empty_channel_items">Pas d\'articles dans ce flux.</string>
+
+    <!--FEEDS-->
+    <string name="unsubscribe_feed_success">Vous vous êtes désabonné du flux RSS !\n
+    Mise à jour des flux!</string>
+
+    <!--ADD FEEDS-->
+    <string name="add_feed_success">Vous êtes maintenant inscrit au flux !</string>
+    <string name="create_new_category">Créer une nouvelle catégorie</string>
+
+
 </resources>

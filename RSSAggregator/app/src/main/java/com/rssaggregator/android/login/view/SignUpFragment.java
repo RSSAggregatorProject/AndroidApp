@@ -25,18 +25,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Fragment for the Sign Up View.
+ */
 public class SignUpFragment extends Fragment implements SignUpView {
 
+  /**
+   * View attributes.
+   */
   @BindView(R.id.rootView) RelativeLayout rootViewRl;
-  @BindView(R.id.emailEt) AppCompatEditText emailEt;
-  @BindView(R.id.passwordEt) AppCompatEditText passwordEt;
+  @BindView(R.id.emailSignUpEt) AppCompatEditText emailEt;
+  @BindView(R.id.passwordSignUpEt) AppCompatEditText passwordEt;
   @BindView(R.id.buttonSignUp) ActionProcessButton signUpBt;
 
-  private AppComponent appComponent;
   private SignUpPresenterImpl presenter;
 
   private LoginActivity activity;
 
+  /**
+   * Create a new instance of SignUpFragment.
+   *
+   * @return Fragment SignUpFragment.
+   */
   public static SignUpFragment newInstance() {
     return new SignUpFragment();
   }
@@ -59,12 +69,18 @@ public class SignUpFragment extends Fragment implements SignUpView {
     injectDependencies();
   }
 
+  /**
+   * Injects dependencies
+   */
   private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
+    AppComponent appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
     this.presenter = appComponent.signUpPresenterImpl();
     this.presenter.setSignUpView(this);
   }
 
+  /**
+   * Handles action, user signs up to the application.
+   */
   @OnClick(R.id.buttonSignUp)
   public void signUp() {
     if (!verifyFields()) {

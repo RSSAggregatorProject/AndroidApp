@@ -8,16 +8,13 @@ public class AddFeedWrapper {
   @SerializedName("id_cat")
   @Expose
   private Integer categoryId;
+  @SerializedName("uri")
   @Expose
-  private String name;
-  @SerializedName("rssLink")
-  @Expose
-  private String uri;
+  private String rssLink;
 
-  public AddFeedWrapper(Integer categoryId, String name, String uri) {
+  public AddFeedWrapper(Integer categoryId, String rssLink) {
     this.categoryId = categoryId;
-    this.name = name;
-    this.uri = uri;
+    this.rssLink = rssLink;
   }
 
   public Integer getCategoryId() {
@@ -28,19 +25,11 @@ public class AddFeedWrapper {
     this.categoryId = categoryId;
   }
 
-  public String getName() {
-    return name;
+  public String getRssLink() {
+    return rssLink;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getUri() {
-    return uri;
-  }
-
-  public void setUri(String uri) {
-    this.uri = uri;
+  public void setRssLink(String rssLink) {
+    this.rssLink = rssLink;
   }
 }

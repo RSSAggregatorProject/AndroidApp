@@ -26,19 +26,35 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Fragment for the login view.
+ */
 public class LoginFragment extends Fragment implements LoginView {
 
+  /**
+   * View attributes.
+   */
   @BindView(R.id.rootView) RelativeLayout rootViewRl;
   @BindView(R.id.emailLoginEt) AppCompatEditText emailEt;
   @BindView(R.id.passwordLoginEt) AppCompatEditText passwordEt;
   @BindView(R.id.buttonLogin) ActionProcessButton loginBt;
 
-  private AppComponent appComponent;
   private LoginPresenterImpl presenter;
 
+  /**
+   * Data
+   */
   private static String loginUser;
   private static String passwordUser;
 
+  /**
+   * Create a new instance of LoginFragment
+   *
+   * @param login
+   * @param password
+   *
+   * @return Fragment LoginFragment.
+   */
   public static LoginFragment newInstance(String login, String password) {
     loginUser = login;
     passwordUser = password;
@@ -62,6 +78,9 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setProgress(0);
     injectDependencies();
 
+    /**
+     * TEMP
+     */
     this.emailEt.setText("iralala");
     this.passwordEt.setText("iralala");
   }
@@ -72,8 +91,11 @@ public class LoginFragment extends Fragment implements LoginView {
     super.onDestroyView();
   }
 
+  /**
+   * Injects dependencies.
+   */
   private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
+    AppComponent appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
     this.presenter = appComponent.loginPresenterImpl();
     this.presenter.setLoginView(this);
   }
@@ -109,6 +131,9 @@ public class LoginFragment extends Fragment implements LoginView {
     return true;
   }
 
+  /**
+   * Handles action, logs in to the application.
+   */
   @OnClick(R.id.buttonLogin)
   public void login() {
     if (!verifyFields()) {
@@ -134,18 +159,6 @@ public class LoginFragment extends Fragment implements LoginView {
   public void showErrorSnackbar(String errorMessage) {
     this.loginBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_SHORT).show();
-
-    /**
-     * TEMP
-     */
-    //TODO Remove this part.
-/*    SharedPreferencesUtils.setUserId(getActivity(), 1);
-    SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
-    SharedPreferencesUtils.setApiToken(getActivity(), "Token");
-
-    Intent intent = new Intent(getActivity(), MainActivity.class);
-    getActivity().startActivity(intent);
-    getActivity().finish();*/
   }
 
   @Override

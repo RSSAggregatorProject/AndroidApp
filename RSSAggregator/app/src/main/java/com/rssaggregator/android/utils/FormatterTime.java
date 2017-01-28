@@ -2,6 +2,7 @@ package com.rssaggregator.android.utils;
 
 import android.content.Context;
 
+import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.R;
 
 import java.text.SimpleDateFormat;
@@ -27,35 +28,42 @@ public class FormatterTime {
    * Change the simple date format to a "Time Ago" style. The style change according to the current
    * date. Example: < 1 hour  =>  "x minutes ago"
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue formatted.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item formatted.
    *
    * @return The new formatted String date.
    */
-  public static String formattedAsTimeAgo(Context context, Date dateIssue) {
-    if (dateIssue == null)
+  public static String formattedAsTimeAgo(Context context, Date dateItem) {
+    if (dateItem == null)
       return context == null ?
           "Unknown date" : context.getResources().getString(R.string.unknown_date_formatter);
     Date currentDate = new Date();
-    return selectCaseTimeAgo(context, currentDate, dateIssue);
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(dateItem);
+    calendar.add(Calendar.HOUR_OF_DAY, -1);
+    dateItem = calendar.getTime();
+
+    return selectCaseTimeAgo(context, currentDate, dateItem);
   }
 
   /**
-   * Return the new date format according to the current date and the date of the issue.
+   * Return the new date format according to the current date and the date of the item.
    *
    * @param context     {@link Context} of the application.
    * @param currentDate {@link Date} and time of the current date.
-   * @param dateIssue   {@link Date} of the issue.
+   * @param dateItem    {@link Date} of the item.
    *
    * @return The new {@link String} date format
    */
-  private static String selectCaseTimeAgo(Context context, Date currentDate, Date dateIssue) {
-    long diffSecondes = (currentDate.getTime() - dateIssue.getTime()) / 1000;
+  private static String selectCaseTimeAgo(Context context, Date currentDate, Date dateItem) {
+    long diffSecondes = (currentDate.getTime() - dateItem.getTime()) / 1000;
 
     // Impossible case but for future case
-    if (diffSecondes < 0)
+    if (diffSecondes < 0) {
+      Logger.e("Current: " + currentDate.toString() + " | Date item : " + dateItem.toString());
       return context == null ?
           "In the future" : context.getResources().getString(R.string.future_time_formatter);
+    }
 
     // < 1 minute  =>  "Just now"
     if (diffSecondes < MINUTE)
@@ -65,22 +73,22 @@ public class FormatterTime {
     if (diffSecondes < HOUR)
       return formatMinutesAgo(context, diffSecondes);
 
-    if (isSameDay(dateIssue, currentDate))
+    if (isSameDay(dateItem, currentDate))
       return formatAsToday(context, diffSecondes);
 
-    if (isYesterday(dateIssue, currentDate))
-      return formatAsYesterday(context, dateIssue);
+    if (isYesterday(dateItem, currentDate))
+      return formatAsYesterday(context, dateItem);
 
     if (isLastWeek(diffSecondes))
-      return formatAsLastWeek(context, dateIssue);
+      return formatAsLastWeek(context, dateItem);
 
     if (isLastMonth(diffSecondes))
-      return formatAsLastMonth(context, dateIssue);
+      return formatAsLastMonth(context, dateItem);
 
     if (isLastYear(diffSecondes))
-      return formatAsLastYear(context, dateIssue, currentDate);
+      return formatAsLastYear(context, dateItem, currentDate);
 
-    return formatAsOther(context, dateIssue);
+    return formatAsOther(context, dateItem);
   }
 
 

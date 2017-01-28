@@ -3,7 +3,6 @@ package com.rssaggregator.android.feed.presenter;
 import android.content.Context;
 
 import com.rssaggregator.android.feed.view.MainView;
-import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 
 public interface MainPresenter {
@@ -12,17 +11,22 @@ public interface MainPresenter {
 
   void setDatabase(Context context);
 
-  void loadAllData();
+  void loadAllData_Online();
 
-  void loadAllDataOffLine();
+  void loadAllData_OffLine();
 
-  void fetchAllItems();
+  //
+  //
+  // DataBase offline methods.
+  //
+  //
+  void fetchAllItems_Offline();
 
-  void fetchStarredItems();
+  void fetchStarredItems_Offline();
 
-  void fetchItemsByCategoryId(Integer categoryId);
+  void fetchItemsByCategoryId_Offline(Integer categoryId);
 
-  void fetchItemsByChannelId(Integer channelId);
+  void fetchItemsByChannelId_Offline(Integer channelId);
 
   void unsubscribeChannel(Channel channel);
 

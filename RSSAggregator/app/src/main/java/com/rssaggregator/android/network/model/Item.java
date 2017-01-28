@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+/**
+ * Object representing an article in the RSS feed.
+ */
 public class Item implements Parcelable {
 
   @SerializedName("id_item")
@@ -15,21 +18,18 @@ public class Item implements Parcelable {
   private Integer itemId;
 
   @Expose
-  private String name;
-
-  @Expose
   private String title;
 
   @Expose
   private String description;
 
-  @SerializedName("link")
-  @Expose
-  private String linkUrl;
-
   @SerializedName("pubDate")
   @Expose
   private Date pubDate;
+
+  @SerializedName("link")
+  @Expose
+  private String linkUrl;
 
   @SerializedName("id_feed")
   @Expose
@@ -41,8 +41,12 @@ public class Item implements Parcelable {
   @Expose
   private boolean starred;
 
+  /**
+   * Additional attributes for offline database.
+   */
   private Integer categoryId;
-  private String nameChannel;
+  private String categoryName;
+  private String channelName;
 
   public Integer getItemId() {
     return itemId;
@@ -50,14 +54,6 @@ public class Item implements Parcelable {
 
   public void setItemId(Integer itemId) {
     this.itemId = itemId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getTitle() {
@@ -76,20 +72,20 @@ public class Item implements Parcelable {
     this.description = description;
   }
 
-  public String getLinkUrl() {
-    return linkUrl;
-  }
-
-  public void setLinkUrl(String linkUrl) {
-    this.linkUrl = linkUrl;
-  }
-
   public Date getPubDate() {
     return pubDate;
   }
 
   public void setPubDate(Date pubDate) {
     this.pubDate = pubDate;
+  }
+
+  public String getLinkUrl() {
+    return linkUrl;
+  }
+
+  public void setLinkUrl(String linkUrl) {
+    this.linkUrl = linkUrl;
   }
 
   public Integer getChannelId() {
@@ -124,13 +120,22 @@ public class Item implements Parcelable {
     this.categoryId = categoryId;
   }
 
-  public String getNameChannel() {
-    return nameChannel;
+  public String getCategoryName() {
+    return categoryName;
   }
 
-  public void setNameChannel(String nameChannel) {
-    this.nameChannel = nameChannel;
+  public void setCategoryName(String categoryName) {
+    this.categoryName = categoryName;
   }
+
+  public String getChannelName() {
+    return channelName;
+  }
+
+  public void setChannelName(String channelName) {
+    this.channelName = channelName;
+  }
+
 
   @Override
   public int describeContents() {
@@ -140,16 +145,16 @@ public class Item implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeValue(this.itemId);
-    dest.writeString(this.name);
     dest.writeString(this.title);
     dest.writeString(this.description);
-    dest.writeString(this.linkUrl);
     dest.writeLong(this.pubDate != null ? this.pubDate.getTime() : -1);
+    dest.writeString(this.linkUrl);
     dest.writeValue(this.channelId);
     dest.writeByte(this.read ? (byte) 1 : (byte) 0);
     dest.writeByte(this.starred ? (byte) 1 : (byte) 0);
     dest.writeValue(this.categoryId);
-    dest.writeString(this.nameChannel);
+    dest.writeString(this.categoryName);
+    dest.writeString(this.channelName);
   }
 
   public Item() {
@@ -157,20 +162,20 @@ public class Item implements Parcelable {
 
   protected Item(Parcel in) {
     this.itemId = (Integer) in.readValue(Integer.class.getClassLoader());
-    this.name = in.readString();
     this.title = in.readString();
     this.description = in.readString();
-    this.linkUrl = in.readString();
     long tmpPubDate = in.readLong();
     this.pubDate = tmpPubDate == -1 ? null : new Date(tmpPubDate);
+    this.linkUrl = in.readString();
     this.channelId = (Integer) in.readValue(Integer.class.getClassLoader());
     this.read = in.readByte() != 0;
     this.starred = in.readByte() != 0;
     this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
-    this.nameChannel = in.readString();
+    this.categoryName = in.readString();
+    this.channelName = in.readString();
   }
 
-  public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+  public static final Creator<Item> CREATOR = new Creator<Item>() {
     @Override
     public Item createFromParcel(Parcel source) {
       return new Item(source);

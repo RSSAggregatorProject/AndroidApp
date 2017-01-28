@@ -11,6 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
+/**
+ * Class which represents the Presenter of the Sign Up View. Requests data to the API and sends it
+ * to the view.
+ */
 public class SignUpPresenterImpl implements SignUpPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
@@ -28,6 +32,12 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     this.signUpView = signUpView;
   }
 
+  /**
+   * Signs Up to the application thanks to the API.
+   *
+   * @param userEmail
+   * @param userPassword
+   */
   @Override
   public void signUp(String userEmail, String userPassword) {
     if (this.signUpView != null) {
@@ -47,6 +57,11 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     this.eventBus.unregister(this);
   }
 
+  //
+  //
+  // OnEvent Methods.
+  //
+  //
   @SuppressWarnings("UnusedDeclaration")
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(SignUpEvent event) {

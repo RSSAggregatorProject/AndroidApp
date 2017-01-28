@@ -4,6 +4,7 @@ import com.rssaggregator.android.network.model.AccessToken;
 import com.rssaggregator.android.network.model.AddCategoryWrapper;
 import com.rssaggregator.android.network.model.AddFeedWrapper;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
+import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Credentials;
 import com.rssaggregator.android.network.model.ItemStateWrapper;
 
@@ -17,18 +18,27 @@ import retrofit2.http.Path;
 
 public interface RestService {
 
+  //
+  //
   // AUTH
+  //
+  //
   @POST("auth")
   Call<AccessToken> logIn(@Body Credentials credentials);
 
   @POST("users")
   Call<Void> signUp(@Body Credentials credentials);
 
-  @GET("categories")
+  //
+  //
+  // Fetch Data
+  //
+  //
+  @GET("data")
   Call<CategoriesWrapper> fetchData();
 
   @POST("categories")
-  Call<Void> addCategory(@Body AddCategoryWrapper wrapper);
+  Call<Category> addCategory(@Body AddCategoryWrapper wrapper);
 
   @POST("feeds")
   Call<Void> subscribeFeed(@Body AddFeedWrapper wrapper);
@@ -44,7 +54,7 @@ public interface RestService {
   @PUT("items")
   Call<Void> updateReadAllItems(@Body ItemStateWrapper wrapper);
 
-  @PUT("items/{id_feed}")
+  @PUT("feeds/{id_feed}/items/")
   Call<Void> updateReadItemsByChannelId(@Path("id_feed") Integer channelId,
                                         @Body ItemStateWrapper wrapper);
 

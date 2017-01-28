@@ -18,6 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Class which performs requests to the database of the application.
+ */
 public class FeedsDataSource {
 
   private DatabaseHandler databaseHandler;
@@ -61,30 +64,8 @@ public class FeedsDataSource {
   public List<Category> selectAllCategories() {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
 
-    List<Category> categories = new ArrayList<Category>();
+    List<Category> categories = new ArrayList<>();
     String selectQuery = DatabaseUtils.SELECT_ALL_CATEGORIES;
-
-    Cursor c = database.rawQuery(selectQuery, null);
-
-    if (c.moveToFirst()) {
-      do {
-        Category category = new Category();
-        category.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        category.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
-        category.setUnread(c.getInt(c.getColumnIndex(DatabaseUtils.UNREAD_CATEGORY)));
-        categories.add(category);
-      } while (c.moveToNext());
-    }
-    c.close();
-    database.close();
-    return categories;
-  }
-
-  public List<Category> getCategories() {
-    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
-
-    List<Category> categories = new ArrayList<Category>();
-    String selectQuery = "SELECT * FROM " + DatabaseUtils.TABLE_CATEGORY;
 
     Cursor c = database.rawQuery(selectQuery, null);
 
@@ -118,7 +99,7 @@ public class FeedsDataSource {
   //
 
   /**
-   * Insert a channel to the database.
+   * Inserts a channel to the database.
    *
    * @param channel Channel to insert.
    *
@@ -131,6 +112,7 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.ID_CHANNEL, channel.getChannelId());
     values.put(DatabaseUtils.ID_CATEGORY, channel.getCategoryId());
     values.put(DatabaseUtils.NAME_CHANNEL, channel.getName());
+    values.put(DatabaseUtils.NAME_CATEGORY, channel.getCategoryName());
     values.put(DatabaseUtils.UNREAD_CHANNEL, channel.getUnread());
     values.put(DatabaseUtils.FAVICON_URI_CHANNEL, channel.getFaviconUri());
 
@@ -140,10 +122,17 @@ public class FeedsDataSource {
     return rowId;
   }
 
+  /**
+   * Selects channels by the category id from the database.
+   *
+   * @param categoryId ID of the category.
+   *
+   * @return List of Channels with the category ID.
+   */
   public List<Channel> selectChannelsByCategoryId(Integer categoryId) {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
 
-    List<Channel> channels = new ArrayList<Channel>();
+    List<Channel> channels = new ArrayList<>();
     String selectQuery = DatabaseUtils.SELECT_CHANNELS_BY_CATEGORY_ID(categoryId);
 
     Cursor c = database.rawQuery(selectQuery, null);
@@ -154,31 +143,7 @@ public class FeedsDataSource {
         channel.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
         channel.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
         channel.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
-        channel.setUnread(c.getInt(c.getColumnIndex(DatabaseUtils.UNREAD_CHANNEL)));
-        channel.setFaviconUri(c.getString(c.getColumnIndex(DatabaseUtils.FAVICON_URI_CHANNEL)));
-        channels.add(channel);
-      } while (c.moveToNext());
-    }
-    c.close();
-    database.close();
-    return channels;
-  }
-
-  public List<Channel> getChannelsByCategoryId(Integer categoryId) {
-    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
-
-    List<Channel> channels = new ArrayList<Channel>();
-    String selectQuery = "SELECT * FROM " + DatabaseUtils.TABLE_CHANNEL + " WHERE "
-        + DatabaseUtils.ID_CATEGORY + "=" + categoryId;
-
-    Cursor c = database.rawQuery(selectQuery, null);
-
-    if (c.moveToFirst()) {
-      do {
-        Channel channel = new Channel();
-        channel.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
-        channel.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        channel.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        channel.setCategoryName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
         channel.setUnread(c.getInt(c.getColumnIndex(DatabaseUtils.UNREAD_CHANNEL)));
         channel.setFaviconUri(c.getString(c.getColumnIndex(DatabaseUtils.FAVICON_URI_CHANNEL)));
         channels.add(channel);
@@ -205,7 +170,7 @@ public class FeedsDataSource {
   //
 
   /**
-   * Insert a item to the database.
+   * Inserts a item to the database.
    *
    * @param item Item to insert.
    *
@@ -221,8 +186,8 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.ID_ITEM, item.getItemId());
     values.put(DatabaseUtils.ID_CHANNEL, item.getChannelId());
     values.put(DatabaseUtils.ID_CATEGORY, item.getCategoryId());
-    values.put(DatabaseUtils.NAME_ITEM, item.getName());
-    values.put(DatabaseUtils.NAME_CHANNEL, item.getNameChannel());
+    values.put(DatabaseUtils.NAME_CHANNEL, item.getChannelName());
+    values.put(DatabaseUtils.NAME_CATEGORY, item.getCategoryName());
     values.put(DatabaseUtils.TITLE_ITEM, item.getTitle());
     values.put(DatabaseUtils.DESCRIPTION_ITEM, item.getDescription());
     values.put(DatabaseUtils.PUBDATE_ITEM, pubDate);
@@ -237,7 +202,7 @@ public class FeedsDataSource {
   }
 
   /**
-   * Select all items in the database.
+   * Selects all items in the database.
    *
    * @return a List of Items.
    */
@@ -256,8 +221,8 @@ public class FeedsDataSource {
         item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
         item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
         item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setChannelName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setCategoryName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
         item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
         item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
 
@@ -282,7 +247,7 @@ public class FeedsDataSource {
   }
 
   /**
-   * Select starred items in the database.
+   * Selects starred items in the database.
    *
    * @return a List of Items.
    */
@@ -301,8 +266,8 @@ public class FeedsDataSource {
         item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
         item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
         item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setChannelName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setCategoryName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
         item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
         item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
 
@@ -348,8 +313,8 @@ public class FeedsDataSource {
         item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
         item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
         item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setChannelName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setCategoryName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
         item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
         item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
 
@@ -395,8 +360,8 @@ public class FeedsDataSource {
         item.setItemId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_ITEM)));
         item.setChannelId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CHANNEL)));
         item.setCategoryId(c.getInt(c.getColumnIndex(DatabaseUtils.ID_CATEGORY)));
-        item.setName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_ITEM)));
-        item.setNameChannel(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setChannelName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CHANNEL)));
+        item.setCategoryName(c.getString(c.getColumnIndex(DatabaseUtils.NAME_CATEGORY)));
         item.setTitle(c.getString(c.getColumnIndex(DatabaseUtils.TITLE_ITEM)));
         item.setDescription(c.getString(c.getColumnIndex(DatabaseUtils.DESCRIPTION_ITEM)));
 
@@ -420,6 +385,50 @@ public class FeedsDataSource {
     return items;
   }
 
+  /**
+   * Number of unread items in the database.
+   *
+   * @return Number of items
+   */
+  public int selectCountUnreadAllItems() {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    int count = 0;
+
+    String selectQuery = DatabaseUtils.SELECT_UNREAD_ITEMS;
+
+    Cursor cursor = database.rawQuery(selectQuery, null);
+    count = cursor.getCount();
+    cursor.close();
+    database.close();
+    return count;
+  }
+
+  /**
+   * Number of starred items in the database.
+   *
+   * @return Number of items.
+   */
+  public int selectCountStarItems() {
+    SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
+    int count = 0;
+
+    String selectQuery = DatabaseUtils.SELECT_STARRED_ITEMS;
+
+    Cursor cursor = database.rawQuery(selectQuery, null);
+    count = cursor.getCount();
+    cursor.close();
+    database.close();
+    return count;
+  }
+
+  /**
+   * Updates the read state of an item.
+   *
+   * @param item  Item to update
+   * @param state New state of the item
+   *
+   * @return int row id of the item updated.
+   */
   public long updateReadStateItem(Item item, boolean state) {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
     String whereClauseStr = DatabaseUtils.ID_ITEM + "=" + item.getItemId()
@@ -430,10 +439,19 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.READ_ITEM, state);
 
     long rowId = database.update(DatabaseUtils.TABLE_ITEM, values, whereClauseStr, null);
+    database.close();
 
     return rowId;
   }
 
+  /**
+   * Updates the star state of an item.
+   *
+   * @param item  Item to update
+   * @param state New state of the item.
+   *
+   * @return int row id of the item updated.
+   */
   public long updateStarStateItem(Item item, boolean state) {
     SQLiteDatabase database = this.databaseHandler.getWritableDatabase();
     String whereClauseStr = DatabaseUtils.ID_ITEM + "=" + item.getItemId()
@@ -444,6 +462,7 @@ public class FeedsDataSource {
     values.put(DatabaseUtils.STARRED_ITEM, state);
 
     long rowId = database.update(DatabaseUtils.TABLE_ITEM, values, whereClauseStr, null);
+    database.close();
 
     return rowId;
   }

@@ -2,8 +2,10 @@ package com.rssaggregator.android.addfeed.view;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
@@ -13,14 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.addfeed.presenter.AddFeedPresenterImpl;
 import com.rssaggregator.android.dependency.AppComponent;
 import com.rssaggregator.android.network.model.Category;
+import com.rssaggregator.android.utils.ArrayUtils;
 import com.rssaggregator.android.utils.BaseActivity;
 
 import java.util.ArrayList;
@@ -30,8 +32,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Activity for Add Feed View.
+ */
 public class AddFeedActivity extends BaseActivity implements AddFeedView {
 
+  @BindView(R.id.rootView) FrameLayout rootViewFl;
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.categoriesSpinner) AppCompatSpinner categoriesSp;
   @BindView(R.id.addCategory) AppCompatImageView addCategoryIg;
@@ -41,10 +47,13 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
 
   private List<Category> categories;
 
+  private Resources resources;
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_add_feed);
+    this.resources = getResources();
     ButterKnife.bind(this);
     injectDependencies();
 
@@ -52,6 +61,9 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     this.presenter.fetchCategories();
   }
 
+  /**
+   * Injects dependencies.
+   */
   private void injectDependencies() {
     AppComponent appComponent = RssAggregatorApplication.get(this).getAppComponent();
     this.presenter = appComponent.addFeedPresenterImpl();
@@ -59,6 +71,9 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     this.presenter.setDatabase(this);
   }
 
+  /**
+   * Initialize the toolbar.
+   */
   private void initializeToolbar() {
     setSupportActionBar(toolbar);
     if (getSupportActionBar() != null) {
@@ -73,6 +88,11 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
   //
   //
 
+  /**
+   * Sets the spinner view after fetching categories from the database.
+   *
+   * @param data List of Category.
+   */
   @Override
   public void setCategoriesToSpinner(List<Category> data) {
     this.categories = data;
@@ -82,14 +102,14 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
       for (Category category : data) {
         categoryNames.add(category.getName());
       }
-      ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout
+      ArrayAdapter<String> adp = new ArrayAdapter<>(this, android.R.layout
           .simple_spinner_dropdown_item, categoryNames);
       categoriesSp.setAdapter(adp);
     } else {
       ArrayList<String> defaultCategory = new ArrayList<>();
-      defaultCategory.add("Create a new category");
+      defaultCategory.add(resources.getString(R.string.create_new_category));
 
-      ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout
+      ArrayAdapter<String> adp = new ArrayAdapter<>(this, android.R.layout
           .simple_spinner_dropdown_item, defaultCategory);
       categoriesSp.setAdapter(adp);
     }
@@ -108,34 +128,36 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     final View dialogView = inflater.inflate(R.layout.dialog_add_category, null);
     builder.setView(dialogView);
 
-    final AppCompatEditText userIdEt = (AppCompatEditText) dialogView.findViewById(R.id.user_id);
-    builder.setTitle("Add a category");
-    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-      }
-    });
-    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        dialog.dismiss();
-      }
-    });
+    final AppCompatEditText categoryNameEt = (AppCompatEditText)
+        dialogView.findViewById(R.id.categoryName);
+    builder.setTitle(resources.getString(R.string.add_category));
+    builder.setPositiveButton(resources.getString(R.string.add),
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+          }
+        });
+    builder.setNegativeButton(resources.getString(R.string.cancel),
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+          }
+        });
     dialog = builder.create();
     dialog.show();
     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String groupName = userIdEt.getText().toString();
+        String categoryName = categoryNameEt.getText().toString();
         InputMethodManager imm = (InputMethodManager) getSystemService(
             Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(userIdEt.getWindowToken(), 0);
-        if (groupName.length() == 0) {
-          Toast.makeText(AddFeedActivity.this, "Please fill the category name", Toast.LENGTH_SHORT)
-              .show();
+        imm.hideSoftInputFromWindow(categoryNameEt.getWindowToken(), 0);
+        if (categoryName.length() == 0) {
+          Snackbar.make(rootViewFl, resources.getString(R.string.create_category_empty_field),
+              Snackbar.LENGTH_SHORT).show();
         } else {
-          presenter.addCategory(groupName);
-//          presenter.retrievePassword(groupName);
+          presenter.addCategory(categoryName);
           dialog.dismiss();
         }
       }
@@ -147,38 +169,43 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     String rssLink = rssLinkTv.getText().toString();
 
     if (rssLink.length() == 0) {
-      Logger.e("NULL");
+      Snackbar.make(this.rootViewFl, resources.getString(R.string.add_feed_rss_field_empty),
+          Snackbar.LENGTH_SHORT).show();
       return;
     }
 
     String categoryName = (String) categoriesSp.getSelectedItem();
 
-    if ("Create a new category".equals(categoryName)) {
-      Logger.e("ERROR");
+    if (resources.getString(R.string.create_new_category).equals(categoryName)) {
+      Snackbar.make(this.rootViewFl, resources.getString(R.string.add_feed_category_error),
+          Snackbar.LENGTH_SHORT).show();
       return;
     }
 
-    Category category = getCategoryByName(categoryName);
+    Category category = ArrayUtils.getCategoryByName(this.categories, categoryName);
 
     if (category != null) {
       this.presenter.addFeed(category, rssLink);
     } else {
-      Logger.e("Error");
+      Snackbar.make(this.rootViewFl, resources.getString(R.string.add_feed_category_error),
+          Snackbar.LENGTH_SHORT).show();
     }
   }
 
-  private Category getCategoryByName(String name) {
-    for (Category category : categories) {
-      if (name.equals(category.getName())) {
-        return category;
-      }
-    }
-    return null;
-  }
-
+  /**
+   * Updates the view after adding a feed.
+   */
   @Override
   public void showFeedAdded() {
     setResult(RESULT_OK, null);
     finish();
+  }
+
+  /**
+   * Shows a Snackbar with a error message.
+   */
+  @Override
+  public void showSnackbarError(String errorMessage) {
+    Snackbar.make(this.rootViewFl, errorMessage, Snackbar.LENGTH_SHORT).show();
   }
 }

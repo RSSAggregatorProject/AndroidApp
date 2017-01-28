@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.rssaggregator.android.R;
+import com.rssaggregator.android.feed.event.ItemClickedEvent;
 import com.rssaggregator.android.feeddetails.view.ItemDetailsActivity;
 import com.rssaggregator.android.network.model.Item;
 import com.rssaggregator.android.utils.FormatterTime;
 import com.rssaggregator.android.utils.Globals;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -48,9 +51,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     } else {
       viewHolder.titleItemTv.setTextColor(Color.parseColor("#512DA8"));
     }
-    viewHolder.titleItemTv.setText(item.getName());
+    viewHolder.titleItemTv.setText(item.getTitle());
     viewHolder.pubDateItemTv.setText(FormatterTime.formattedAsTimeAgo(context, item.getPubDate()));
-    viewHolder.nameChannelTv.setText(item.getNameChannel());
+    viewHolder.nameChannelTv.setText(item.getChannelName());
 
     if (item.isStarred()) {
       viewHolder.starItemIg.setImageResource(R.drawable.ic_star);
@@ -61,6 +64,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     viewHolder.rowItemRl.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
+        EventBus eventBus = EventBus.getDefault();
+        eventBus.post(new ItemClickedEvent(item));
         Intent intent = new Intent(context, ItemDetailsActivity.class);
         intent.putExtra(Globals.EXTRA_ITEM, item);
         context.startActivity(intent);

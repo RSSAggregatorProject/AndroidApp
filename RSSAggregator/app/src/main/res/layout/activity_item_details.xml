@@ -45,17 +45,14 @@
             tools:text="Eurosport.fr"
             />
 
-
-        <android.support.v7.widget.AppCompatTextView
+        <WebView
             android:id="@+id/descriptionItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/keyline_16"
+            android:layout_marginEnd="@dimen/keyline_16"
+            android:layout_marginStart="@dimen/keyline_16"
             android:layout_marginTop="@dimen/keyline_48"
-            android:gravity="start|center_vertical"
-            android:padding="@dimen/keyline_16"
-            android:textColor="#212121"
-            android:textSize="18sp"
-            tools:text="Evra a signé à l'OM"
             />
 
         <android.support.v7.widget.AppCompatButton
@@ -63,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_48"
             android:text="VISIT THE WEBSITE"
             />
 

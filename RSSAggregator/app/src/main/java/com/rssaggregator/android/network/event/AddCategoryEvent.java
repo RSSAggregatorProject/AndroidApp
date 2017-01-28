@@ -1,12 +1,13 @@
 package com.rssaggregator.android.network.event;
 
-public class AddCategoryEvent extends BaseEvent<Void> {
+import com.rssaggregator.android.network.model.Category;
+
+public class AddCategoryEvent extends BaseEvent<Category> {
+  public AddCategoryEvent(Category category) {
+    super(category);
+  }
 
   public AddCategoryEvent(Throwable throwable) {
     super(throwable);
-  }
-
-  public AddCategoryEvent() {
-    super((Void) null);
   }
 }

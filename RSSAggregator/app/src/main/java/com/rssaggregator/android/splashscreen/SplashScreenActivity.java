@@ -1,4 +1,4 @@
-package com.rssaggregator.android.splashscreen.view;
+package com.rssaggregator.android.splashscreen;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,18 +12,18 @@ import com.rssaggregator.android.dependency.AppComponent;
 import com.rssaggregator.android.login.LoginActivity;
 import com.rssaggregator.android.network.event.AccessTokenFetchedEvent;
 import com.rssaggregator.android.network.model.AccessToken;
-import com.rssaggregator.android.splashscreen.presenter.SplashScreenPresenterImpl;
 import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.Globals;
 import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+/**
+ * Activity for Splash Screen.
+ */
 public class SplashScreenActivity extends BaseActivity {
 
-  private AppComponent appComponent;
   private EventBus eventBus;
-  private SplashScreenPresenterImpl presenter;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,12 +33,18 @@ public class SplashScreenActivity extends BaseActivity {
     waitSplashScreen();
   }
 
+  /**
+   * Injects dependencies.
+   */
   private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(this).getAppComponent();
+    AppComponent appComponent = RssAggregatorApplication.get(this).getAppComponent();
     this.eventBus = appComponent.bus();
-    this.presenter = appComponent.splashScreenPresenterImpl();
   }
 
+  /**
+   * Waits few seconds and redirects to the main activity if he is already connected. Otherwise, it
+   * redirects to the login activity.
+   */
   private void waitSplashScreen() {
     new Handler().postDelayed(new Runnable() {
       @Override

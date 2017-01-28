@@ -3,6 +3,7 @@ package com.rssaggregator.android.feeddetails.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.rssaggregator.android.R;
@@ -23,6 +25,8 @@ import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.FormatterTime;
 import com.rssaggregator.android.utils.Globals;
 
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,7 +36,7 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
   @BindView(R.id.titleItem) AppCompatTextView titleItemTv;
   @BindView(R.id.pubDateItem) AppCompatTextView pubDateItemTv;
   @BindView(R.id.nameChannelItem) AppCompatTextView nameChannelItemTv;
-  @BindView(R.id.descriptionItem) AppCompatTextView descriptionItemTv;
+  @BindView(R.id.descriptionItem) WebView descriptionItemWv;
 
   private ItemDetailsPresenterImpl presenter;
 
@@ -71,11 +75,28 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
     if (getSupportActionBar() != null) {
       getSupportActionBar().setTitle(item.getTitle());
     }
+    String title = this.item.getTitle();
+    Date pubDate = this.item.getPubDate();
+    String channelName = this.item.getChannelName();
+    String description = this.item.getDescription();
 
-    titleItemTv.setText(item.getTitle());
-    pubDateItemTv.setText(FormatterTime.formattedAsTimeAgo(this, item.getPubDate()));
-    nameChannelItemTv.setText(item.getNameChannel());
-    descriptionItemTv.setText(item.getDescription());
+    if (title != null) {
+      this.titleItemTv.setText(title);
+    }
+
+    if (pubDate != null) {
+      this.pubDateItemTv.setText(FormatterTime.formattedAsTimeAgo(this, pubDate));
+    }
+
+    if (channelName != null) {
+      this.nameChannelItemTv.setText(channelName);
+    }
+
+    if (description != null) {
+      descriptionItemWv.getSettings();
+      descriptionItemWv.setBackgroundColor(Color.TRANSPARENT);
+      descriptionItemWv.loadDataWithBaseURL("", description, "text/html", "utf-8", "");
+    }
   }
 
   @Override

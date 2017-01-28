@@ -59,89 +59,88 @@ public class MainPresenterImpl implements MainPresenter {
   // Api Methods.
   //
   //
+
+  /**
+   * Loads all data Online.
+   */
   @Override
-  public void loadAllData() {
+  public void loadAllData_Online() {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
     this.rssApi.fetchData();
   }
 
+  /**
+   * Loads all data Offline.
+   */
   @Override
-  public void loadAllDataOffLine() {
+  public void loadAllData_OffLine() {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
-    // Get categories
-    List<Category> returnedCategoryList = new ArrayList<>();
-    HashMap<Category, List<Channel>> returnedChannelList = new HashMap<>();
-
-    List<Category> categoryList = getCategories();
-    if (categoryList != null && categoryList.size() != 0) {
-
-      for (int i = 0; i < categoryList.size(); i++) {
-
-        List<Channel> channelList = getChannelsByCategoryId(categoryList.get(i).getCategoryId());
-
-        if (channelList != null && channelList.size() != 0) {
-          categoryList.get(i).setChannels(channelList);
-          returnedChannelList.put(categoryList.get(i), channelList);
-        } else {
-          categoryList.get(i).setChannels(new ArrayList<Channel>());
-          returnedChannelList.put(categoryList.get(i), new ArrayList<Channel>());
-        }
-
-        returnedCategoryList.add(categoryList.get(i));
-      }
-    }
-    this.mainView.setNavigationContentOffline(returnedCategoryList, returnedChannelList);
-
-    List<Item> data = getAllItemsFromDatabase();
+    this.setMainCategoriesNavigation_Offline();
+    List<Item> data = getAllItems_Database();
     this.mainView.showAllItemsContent(data);
   }
 
+  /**
+   * Fetches all data from database.
+   */
   @Override
-  public void fetchAllItems() {
+  public void fetchAllItems_Offline() {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
-    List<Item> data = getAllItemsFromDatabase();
+    List<Item> data = getAllItems_Database();
     this.mainView.showAllItemsContent(data);
   }
 
+  /**
+   * Fetches starred items from database.
+   */
   @Override
-  public void fetchStarredItems() {
+  public void fetchStarredItems_Offline() {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
-    List<Item> data = getStarredItemsFromDatabase();
+    List<Item> data = getStarredItems_Database();
     this.mainView.showStarredItemsContent(data);
   }
 
+  /**
+   * Fetches items by category from database.
+   *
+   * @param categoryId id of category.
+   */
   @Override
-  public void fetchItemsByCategoryId(Integer categoryId) {
+  public void fetchItemsByCategoryId_Offline(Integer categoryId) {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
-    List<Item> data = getItemsByCategoryIdFromDatabase(categoryId);
+    List<Item> data = getItemsByCategoryId_Database(categoryId);
     this.mainView.showItemsByCategoryIdContent(data);
   }
 
+  /**
+   * Fetches items by channel from database.
+   *
+   * @param channelId id of channel.
+   */
   @Override
-  public void fetchItemsByChannelId(Integer channelId) {
+  public void fetchItemsByChannelId_Offline(Integer channelId) {
     if (this.mainView != null) {
       this.mainView.showLoading();
     }
-
-    List<Item> data = getItemsByChannelIdFrommDatabase(channelId);
+    List<Item> data = getItemsByChannelId_Database(channelId);
     this.mainView.showItemsByChannelIdContent(data);
   }
 
+  /**
+   * Unsubscribe to the channel.
+   *
+   * @param channel Channel to unsubscribe.
+   */
   @Override
   public void unsubscribeChannel(Channel channel) {
     if (this.mainView != null) {
@@ -150,13 +149,27 @@ public class MainPresenterImpl implements MainPresenter {
     this.rssApi.unsubscribeFeed(channel.getChannelId());
   }
 
+  /**
+   * Puts all the items at read state.
+   */
   @Override
   public void updateReadAllItems() {
+    if (this.mainView != null) {
+      this.mainView.showLoading();
+    }
     this.rssApi.updateReadAllItems();
   }
 
+  /**
+   * Puts items of a channel at read state.
+   *
+   * @param selectedChannel Channel to update.
+   */
   @Override
   public void updateReadItemsByChannelId(Channel selectedChannel) {
+    if (this.mainView != null) {
+      this.mainView.showLoading();
+    }
     this.channelId = selectedChannel.getChannelId();
     this.rssApi.updateReadItemsByChannelId(selectedChannel);
   }
@@ -166,9 +179,15 @@ public class MainPresenterImpl implements MainPresenter {
   // Database methods.
   //
   //
+
+  /**
+   * Inserts data to the database.
+   *
+   * @param data Data
+   */
   private void insertDataToDatabase(CategoriesWrapper data) {
     // Delete previous data in the database.
-    deletePreviousData();
+    deletePreviousData_Database();
 
     /**
      * Insert Categories.
@@ -200,6 +219,7 @@ public class MainPresenterImpl implements MainPresenter {
       for (Channel channel : category.getChannels()) {
         // Add the parent category to the channel.
         channel.setCategoryId(category.getCategoryId());
+        channel.setCategoryName(category.getName());
         this.dataBase.insertChannel(channel);
         insertItemsToDatabase(channel, category);
       }
@@ -221,7 +241,8 @@ public class MainPresenterImpl implements MainPresenter {
         // Add the parent category and the parent channel to the item.
         item.setCategoryId(category.getCategoryId());
         item.setChannelId(channel.getChannelId());
-        item.setNameChannel(channel.getName());
+        item.setChannelName(channel.getName());
+        item.setCategoryName(category.getName());
         this.dataBase.insertItem(item);
       }
     }
@@ -230,10 +251,19 @@ public class MainPresenterImpl implements MainPresenter {
   /**
    * Deletes rows in the database (All items from all channels)
    */
-  private void deletePreviousData() {
+  private void deletePreviousData_Database() {
     this.dataBase.deleteAllCategories();
     this.dataBase.deleteAllChannels();
     this.dataBase.deleteAllItems();
+  }
+
+  /**
+   * Gets categories from the database.
+   *
+   * @return List of Category.
+   */
+  private List<Category> getCategories_Database() {
+    return this.dataBase.selectAllCategories();
   }
 
   /**
@@ -241,7 +271,7 @@ public class MainPresenterImpl implements MainPresenter {
    *
    * @return List of Items.
    */
-  private List<Item> getAllItemsFromDatabase() {
+  private List<Item> getAllItems_Database() {
     return this.dataBase.selectAllItems();
   }
 
@@ -250,7 +280,7 @@ public class MainPresenterImpl implements MainPresenter {
    *
    * @return List of Items.
    */
-  private List<Item> getStarredItemsFromDatabase() {
+  private List<Item> getStarredItems_Database() {
     return this.dataBase.selectStarredItems();
   }
 
@@ -261,7 +291,7 @@ public class MainPresenterImpl implements MainPresenter {
    *
    * @return List of Items.
    */
-  private List<Item> getItemsByCategoryIdFromDatabase(Integer categoryId) {
+  private List<Item> getItemsByCategoryId_Database(Integer categoryId) {
     return this.dataBase.selectItemsByCategoryId(categoryId);
   }
 
@@ -272,25 +302,32 @@ public class MainPresenterImpl implements MainPresenter {
    *
    * @return List of Items.
    */
-  private List<Item> getItemsByChannelIdFrommDatabase(Integer channelId) {
+  private List<Item> getItemsByChannelId_Database(Integer channelId) {
     return this.dataBase.selectItemsByChannelId(channelId);
   }
 
-  /**
-   * Gets categories from the database.
-   *
-   * @return List of Category.
-   */
-  private List<Category> getCategories() {
-    return this.dataBase.selectAllCategories();
-  }
-
-  private List<Channel> getChannelsByCategoryId(Integer categoryId) {
+  private List<Channel> getChannelsByCategoryId_Database(Integer categoryId) {
     return this.dataBase.selectChannelsByCategoryId(categoryId);
   }
 
-  private void updateReadAllItemsFromDatabase() {
-    List<Item> items = getAllItemsFromDatabase();
+  /**
+   * Gets number of unread items.
+   *
+   * @return Number of items.
+   */
+  public int getCountReadAllItems_Database() {
+    return this.dataBase.selectCountUnreadAllItems();
+  }
+
+  public int getCountStarItems_Database() {
+    return this.dataBase.selectCountStarItems();
+  }
+
+  /**
+   * Updates All items to read state in the database.
+   */
+  private void updateReadAllItems_Database() {
+    List<Item> items = getAllItems_Database();
 
     if (items != null && items.size() != 0) {
       for (Item item : items) {
@@ -299,14 +336,54 @@ public class MainPresenterImpl implements MainPresenter {
     }
   }
 
-  private void updateReadItemsByChannelIdFromDatabase(Integer channelId) {
-    List<Item> items = getItemsByChannelIdFrommDatabase(channelId);
+  /**
+   * Updates items of a channel to read state in the database.
+   *
+   * @param channelId id of the channel.
+   */
+  private void updateReadItemsByChannelId_Database(Integer channelId) {
+    List<Item> items = getItemsByChannelId_Database(channelId);
 
     if (items != null && items.size() != 0) {
       for (Item item : items) {
         this.dataBase.updateReadStateItem(item, true);
       }
     }
+  }
+
+  //
+  //
+  // Others methods.
+  //
+  //
+
+  /**
+   * Sets navigation drawer content when the app is offline.
+   */
+  private void setMainCategoriesNavigation_Offline() {
+    List<Category> returnedCategoryList = new ArrayList<>();
+    HashMap<Category, List<Channel>> returnedChannelList = new HashMap<>();
+
+    List<Category> categoryList = getCategories_Database();
+    if (categoryList != null && categoryList.size() != 0) {
+
+      for (int i = 0; i < categoryList.size(); i++) {
+
+        List<Channel> channelList = getChannelsByCategoryId_Database(
+            categoryList.get(i).getCategoryId());
+
+        if (channelList != null && channelList.size() != 0) {
+          categoryList.get(i).setChannels(channelList);
+          returnedChannelList.put(categoryList.get(i), channelList);
+        } else {
+          categoryList.get(i).setChannels(new ArrayList<Channel>());
+          returnedChannelList.put(categoryList.get(i), new ArrayList<Channel>());
+        }
+
+        returnedCategoryList.add(categoryList.get(i));
+      }
+    }
+    this.mainView.setNavigationContent_Offline(returnedCategoryList, returnedChannelList);
   }
 
   //
@@ -320,19 +397,17 @@ public class MainPresenterImpl implements MainPresenter {
     if (event.isSuccess()) {
       if (this.mainView != null) {
         CategoriesWrapper data = event.getData();
-        this.mainView.setNavigationContent(data);
+        this.mainView.setNavigationContent_Online(data);
         insertDataToDatabase(data);
-        fetchAllItems();
+        fetchAllItems_Offline();
       }
     } else {
-      List<Item> offlineData = getAllItemsFromDatabase();
+      List<Item> offlineData = getAllItems_Database();
       if (this.mainView != null) {
+        this.setMainCategoriesNavigation_Offline();
         this.mainView.showAllItemsContent(offlineData);
         this.mainView.showSnackBarError(event.getThrowable().getMessage());
       }
-      /*if (this.mainView != null) {
-        this.mainView.showError(event.getThrowable().getMessage());
-      }*/
     }
   }
 
@@ -342,7 +417,7 @@ public class MainPresenterImpl implements MainPresenter {
     if (event.isSuccess()) {
       if (this.mainView != null) {
         this.mainView.unsubscribeChannelSuccess();
-        loadAllData();
+        loadAllData_Online();
       }
     } else {
       this.mainView.showSnackBarError(event.getThrowable().getMessage());
@@ -354,8 +429,8 @@ public class MainPresenterImpl implements MainPresenter {
   public void onMessageEvent(UpdateReadAllItemsEvent event) {
     if (event.isSuccess()) {
       if (this.mainView != null) {
-        this.updateReadAllItemsFromDatabase();
-        this.fetchAllItems();
+        this.updateReadAllItems_Database();
+        this.fetchAllItems_Offline();
       }
     } else {
       this.mainView.showSnackBarError(event.getThrowable().getMessage());
@@ -367,8 +442,8 @@ public class MainPresenterImpl implements MainPresenter {
   public void onMessageEvent(UpdateReadItemsByChannelIdEvent event) {
     if (event.isSuccess()) {
       if (this.mainView != null) {
-        this.updateReadItemsByChannelIdFromDatabase(this.channelId);
-        this.fetchItemsByChannelId(this.channelId);
+        this.updateReadItemsByChannelId_Database(this.channelId);
+        this.fetchItemsByChannelId_Offline(this.channelId);
         this.channelId = null;
       }
     } else {

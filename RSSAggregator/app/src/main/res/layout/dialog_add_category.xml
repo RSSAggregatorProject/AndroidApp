@@ -17,10 +17,10 @@
         >
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/user_id"
+            android:id="@+id/categoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New Category"
+            android:hint="@string/add_category"
             android:inputType="text"
             />
 

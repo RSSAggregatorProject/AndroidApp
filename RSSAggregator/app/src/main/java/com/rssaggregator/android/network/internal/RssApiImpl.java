@@ -3,9 +3,6 @@ package com.rssaggregator.android.network.internal;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.orhanobut.logger.Logger;
-import com.rssaggregator.android.R;
 import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.error.ApiError;
 import com.rssaggregator.android.network.event.AccessTokenFetchedEvent;
@@ -29,18 +26,11 @@ import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Credentials;
 import com.rssaggregator.android.network.model.Item;
 import com.rssaggregator.android.network.model.ItemStateWrapper;
-import com.rssaggregator.android.network.utils.DateDeserializer;
 import com.rssaggregator.android.network.utils.TokenRequestInterceptor;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -48,6 +38,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Class which implements the Rest Service and does, asynchronously, requests to the API.
+ */
 public class RssApiImpl implements RssApi {
   private static AccessToken accessToken;
   private final Context context;
@@ -65,6 +58,11 @@ public class RssApiImpl implements RssApi {
     this.eventBus.register(this);
   }
 
+  /**
+   * Logs the user to the API.
+   *
+   * @param credentials User and Password of the user.
+   */
   @Override
   public void logIn(Credentials credentials) {
     this.restService.logIn(credentials).enqueue(new Callback<AccessToken>() {
@@ -80,18 +78,32 @@ public class RssApiImpl implements RssApi {
             ApiError error = new Gson().fromJson(json, ApiError.class);
             eventBus.post(new LogInEvent(new Throwable(error.getErrorDetails())));
           } catch (Exception e) {
-            eventBus.post(new LogInEvent(new Throwable("Error")));
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new LogInEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new LogInEvent(new Throwable("Error")));
+            }
           }
         }
       }
 
       @Override
-      public void onFailure(Call<AccessToken> call, Throwable t) {
-        eventBus.post(new LogInEvent(new Throwable("Error")));
+      public void onFailure(Call<AccessToken> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new LogInEvent(throwable));
+        } else {
+          eventBus.post(new LogInEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Signs up the user to the API.
+   *
+   * @param credentials User and password of the user.
+   */
   @Override
   public void signUp(Credentials credentials) {
     this.restService.signUp(credentials).enqueue(new Callback<Void>() {
@@ -105,123 +117,183 @@ public class RssApiImpl implements RssApi {
             ApiError error = new Gson().fromJson(json, ApiError.class);
             eventBus.post(new SignUpEvent(new Throwable(error.getErrorDetails())));
           } catch (Exception e) {
-            eventBus.post(new SignUpEvent(new Throwable("Error")));
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new SignUpEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new SignUpEvent(new Throwable("Error")));
+            }
           }
         }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new SignUpEvent(new Throwable("Error")));
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new SignUpEvent(throwable));
+        } else {
+          eventBus.post(new SignUpEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Fetch all the data from the api.
+   */
   @Override
   public void fetchData() {
     this.restService.fetchData().enqueue(new Callback<CategoriesWrapper>() {
       @Override
       public void onResponse(Call<CategoriesWrapper> call, Response<CategoriesWrapper> response) {
         if (response.isSuccessful()) {
-          //  CategoriesWrapper wrapper = response.body();
-
-          /**
-           * TEMP
-           */
-          try {
-/*            String json = response.errorBody().string();
-            ApiError error = new Gson().fromJson(json, ApiError.class);*/
-
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.excludeFieldsWithoutExposeAnnotation();
-            gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
-            Gson gson = gsonBuilder.create();
-
-            InputStream raw = context.getResources().openRawResource(R.raw.data);
-            Reader rd = new BufferedReader(new InputStreamReader(raw));
-
-            CategoriesWrapper wrapper = gson.fromJson(rd, CategoriesWrapper.class);
-            eventBus.post(new FetchDataEvent(wrapper));
-            //eventBus.post(new FetchDataEvent(new Throwable(error.getErrorDetails())));
-          } catch (Exception e) {
-            Logger.e("Exception");
-            eventBus.post(new FetchDataEvent(new Throwable("Error")));
-          }
-
-//          eventBus.post(new FetchDataEvent(wrapper));
+          CategoriesWrapper wrapper = response.body();
+          eventBus.post(new FetchDataEvent(wrapper));
         } else {
           try {
             String json = response.errorBody().string();
             ApiError error = new Gson().fromJson(json, ApiError.class);
-
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.excludeFieldsWithoutExposeAnnotation();
-            gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
-            Gson gson = gsonBuilder.create();
-
-            InputStream raw = context.getResources().openRawResource(R.raw.data);
-            Reader rd = new BufferedReader(new InputStreamReader(raw));
-
-            CategoriesWrapper wrapper = gson.fromJson(rd, CategoriesWrapper.class);
-            eventBus.post(new FetchDataEvent(wrapper));
-            //eventBus.post(new FetchDataEvent(new Throwable(error.getErrorDetails())));
+            eventBus.post(new FetchDataEvent(new Throwable(error.getErrorDetails())));
           } catch (Exception e) {
-            Logger.e("Exception");
-            eventBus.post(new FetchDataEvent(new Throwable("Error")));
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new FetchDataEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new FetchDataEvent(new Throwable("Error")));
+            }
           }
         }
       }
 
       @Override
-      public void onFailure(Call<CategoriesWrapper> call, Throwable t) {
-        eventBus.post(new FetchDataEvent(new Throwable("Error")));
+      public void onFailure(Call<CategoriesWrapper> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new FetchDataEvent(throwable));
+        } else {
+          eventBus.post(new FetchDataEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Adds a category to the user.
+   *
+   * @param categoryName name of the new category.
+   */
   @Override
   public void addCategory(String categoryName) {
     AddCategoryWrapper wrapper = new AddCategoryWrapper(categoryName);
-    this.restService.addCategory(wrapper).enqueue(new Callback<Void>() {
+    this.restService.addCategory(wrapper).enqueue(new Callback<Category>() {
       @Override
-      public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new AddCategoryEvent());
+      public void onResponse(Call<Category> call, Response<Category> response) {
+        if (response.isSuccessful()) {
+          Category category = response.body();
+          eventBus.post(new AddCategoryEvent(category));
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new AddCategoryEvent(new Throwable(error.getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new AddCategoryEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new AddCategoryEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new AddCategoryEvent(t));
+      public void onFailure(Call<Category> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new AddCategoryEvent(throwable));
+        } else {
+          eventBus.post(new AddCategoryEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+
+  /**
+   * Subscribes/adds a feed.
+   *
+   * @param category category to add the feed
+   * @param rssLink  link of the feed.
+   */
   @Override
   public void subscribeFeed(Category category, String rssLink) {
-    AddFeedWrapper wrapper = new AddFeedWrapper(category.getCategoryId(), "Name", rssLink);
+    AddFeedWrapper wrapper = new AddFeedWrapper(category.getCategoryId(), rssLink);
     this.restService.subscribeFeed(wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new AddFeedEvent());
+        if (response.isSuccessful()) {
+          eventBus.post(new AddFeedEvent());
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new AddFeedEvent(new Throwable(error.getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new AddFeedEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new AddFeedEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new AddFeedEvent(t));
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new AddFeedEvent(throwable));
+        } else {
+          eventBus.post(new AddFeedEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Unsubscribe the user to the channel.
+   *
+   * @param channelId id of the channel to unsubscribe.
+   */
   @Override
   public void unsubscribeFeed(Integer channelId) {
     this.restService.unsubscribeFeed(channelId).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new UnsubscribeChannelEvent());
+        if (response.isSuccessful()) {
+          eventBus.post(new UnsubscribeChannelEvent());
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new UnsubscribeChannelEvent(new Throwable(error.getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new UnsubscribeChannelEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new UnsubscribeChannelEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new UnsubscribeChannelEvent());
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new UnsubscribeChannelEvent(throwable));
+        } else {
+          eventBus.post(new UnsubscribeChannelEvent(new Throwable("Error")));
+        }
       }
     });
   }
@@ -232,22 +304,49 @@ public class RssApiImpl implements RssApi {
   //
   //
 
+  /**
+   * Updates all the items to read state.
+   */
   @Override
   public void updateReadAllItems() {
     ItemStateWrapper wrapper = new ItemStateWrapper(true, null);
     this.restService.updateReadAllItems(wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
-        eventBus.post(new UpdateReadAllItemsEvent());
+        if (response.isSuccessful()) {
+          eventBus.post(new UpdateReadAllItemsEvent());
+        } else {
+          try {
+            String json = response.errorBody().string();
+            ApiError error = new Gson().fromJson(json, ApiError.class);
+            eventBus.post(new UpdateReadAllItemsEvent(new Throwable(error.getErrorDetails())));
+          } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().length() != 0) {
+              eventBus.post(new UpdateReadAllItemsEvent(new Throwable(e.getMessage())));
+            } else {
+              eventBus.post(new UpdateReadAllItemsEvent(new Throwable("Error")));
+            }
+          }
+        }
       }
 
       @Override
-      public void onFailure(Call<Void> call, Throwable t) {
-        eventBus.post(new UpdateReadAllItemsEvent(t));
+      public void onFailure(Call<Void> call, Throwable throwable) {
+        if (throwable != null && throwable.getMessage() != null &&
+            throwable.getMessage().length() != 0) {
+          eventBus.post(new UpdateReadAllItemsEvent(throwable));
+        } else {
+          eventBus.post(new UpdateReadAllItemsEvent(new Throwable("Error")));
+        }
       }
     });
   }
 
+  /**
+   * Updates all the items of a channel to read state.
+   *
+   * @param channel channel to update.
+   */
   @Override
   public void updateReadItemsByChannelId(Channel channel) {
     ItemStateWrapper wrapper = new ItemStateWrapper(true, null);
@@ -256,12 +355,32 @@ public class RssApiImpl implements RssApi {
 
           @Override
           public void onResponse(Call<Void> call, Response<Void> response) {
-            eventBus.post(new UpdateReadItemsByChannelIdEvent());
+            if (response.isSuccessful()) {
+              eventBus.post(new UpdateReadItemsByChannelIdEvent());
+            } else {
+              try {
+                String json = response.errorBody().string();
+                ApiError error = new Gson().fromJson(json, ApiError.class);
+                eventBus.post(new UpdateReadItemsByChannelIdEvent(new Throwable(error
+                    .getErrorDetails())));
+              } catch (Exception e) {
+                if (e.getMessage() != null && e.getMessage().length() != 0) {
+                  eventBus.post(new UpdateReadItemsByChannelIdEvent(new Throwable(e.getMessage())));
+                } else {
+                  eventBus.post(new UpdateReadItemsByChannelIdEvent(new Throwable("Error")));
+                }
+              }
+            }
           }
 
           @Override
-          public void onFailure(Call<Void> call, Throwable t) {
-            eventBus.post(new UpdateReadItemsByChannelIdEvent(t));
+          public void onFailure(Call<Void> call, Throwable throwable) {
+            if (throwable != null && throwable.getMessage() != null &&
+                throwable.getMessage().length() != 0) {
+              eventBus.post(new UpdateReadItemsByChannelIdEvent(throwable));
+            } else {
+              eventBus.post(new UpdateReadItemsByChannelIdEvent(new Throwable("Error")));
+            }
           }
         });
   }

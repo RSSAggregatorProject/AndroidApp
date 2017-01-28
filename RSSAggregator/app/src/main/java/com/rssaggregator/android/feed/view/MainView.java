@@ -12,11 +12,9 @@ public interface MainView {
 
   void showLoading();
 
-  void showError(String errorMessage);
-
   void showSnackBarError(String errorMessage);
 
-  void setNavigationContent(CategoriesWrapper wrapper);
+  void setNavigationContent_Online(CategoriesWrapper wrapper);
 
   void showAllItemsContent(List<Item> data);
 
@@ -25,8 +23,6 @@ public interface MainView {
   void showItemsByCategoryIdContent(List<Item> data);
 
   void showItemsByChannelIdContent(List<Item> data);
-
-  void showContent(CategoriesWrapper wrapper);
 
   /**
    * Success methods
@@ -37,7 +33,7 @@ public interface MainView {
   /**
    * Offline methods
    */
-  void setNavigationContentOffline(List<Category> categories,
-                                   HashMap<Category, List<Channel>> channels);
+  void setNavigationContent_Offline(List<Category> categories,
+                                    HashMap<Category, List<Channel>> channels);
 
 }

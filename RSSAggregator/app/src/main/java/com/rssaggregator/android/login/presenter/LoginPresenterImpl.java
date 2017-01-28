@@ -13,6 +13,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
+/**
+ * Class which represents the Presenter of the Login View. Requests data to the API and sends it to
+ * the view.
+ */
 public class LoginPresenterImpl implements LoginPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
@@ -30,6 +34,12 @@ public class LoginPresenterImpl implements LoginPresenter {
     this.loginView = loginView;
   }
 
+  /**
+   * Logs In to the application thanks to the API.
+   *
+   * @param userEmail
+   * @param userPassword
+   */
   @Override
   public void logIn(String userEmail, String userPassword) {
     Credentials credentials = new Credentials();
@@ -49,6 +59,11 @@ public class LoginPresenterImpl implements LoginPresenter {
     this.eventBus.unregister(this);
   }
 
+  //
+  //
+  // OnEvent methods.
+  //
+  //
   @SuppressWarnings("UnusedDeclaration")
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(LogInEvent event) {

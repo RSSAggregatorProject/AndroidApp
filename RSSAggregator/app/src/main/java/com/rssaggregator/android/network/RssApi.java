@@ -7,10 +7,21 @@ import com.rssaggregator.android.network.model.Item;
 
 public interface RssApi {
 
+  //
+  //
+  // Auth methods
+  //
+  //
   void logIn(Credentials credentials);
 
   void signUp(Credentials credentials);
 
+
+  //
+  //
+  // Fetching data methods.
+  //
+  //
   void fetchData();
 
   void addCategory(String categoryName);
