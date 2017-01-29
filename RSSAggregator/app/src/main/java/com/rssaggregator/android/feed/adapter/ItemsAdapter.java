@@ -25,6 +25,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Adapter for Items Recycler View.
+ */
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHolder> {
 
   private List<Item> items;
@@ -78,6 +81,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemViewHold
     return this.items.size();
   }
 
+  /**
+   * Item View Holder.
+   */
   static public class ItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.rowItem) LinearLayout rowItemRl;
     @BindView(R.id.titleItem) AppCompatTextView titleItemTv;

@@ -11,6 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * Class to deserialize a date format with GSON.
+ *
+ * https://kylewbanks.com/blog/String-Date-Parsing-with-GSON-UTC-Time-Zone
+ */
 public class DateDeserializer implements JsonDeserializer<Date> {
 
   @Override

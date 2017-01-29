@@ -8,6 +8,9 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Interceptor for API requests. Sets the Authorization and the Content-Type header.
+ */
 public class TokenRequestInterceptor implements Interceptor {
   AccessToken accessToken;
 

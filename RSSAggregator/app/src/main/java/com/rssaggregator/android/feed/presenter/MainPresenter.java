@@ -6,6 +6,9 @@ import android.content.Context;
 import com.rssaggregator.android.feed.view.MainView;
 import com.rssaggregator.android.network.model.Channel;
 
+/**
+ * Interface for the MainPresenter.
+ */
 public interface MainPresenter {
 
   void setMainView(MainView mainView);

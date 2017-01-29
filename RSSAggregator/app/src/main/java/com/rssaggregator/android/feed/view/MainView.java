@@ -8,6 +8,9 @@ import com.rssaggregator.android.network.model.Item;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Interface for the MainActivity.
+ */
 public interface MainView {
 
   void showLoading();

@@ -5,6 +5,9 @@ import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Credentials;
 import com.rssaggregator.android.network.model.Item;
 
+/**
+ * Interface for the RSS API Server.
+ */
 public interface RssApi {
 
   //

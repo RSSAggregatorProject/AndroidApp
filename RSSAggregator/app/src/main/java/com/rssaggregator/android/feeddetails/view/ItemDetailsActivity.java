@@ -214,6 +214,11 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
   // On Click methods
   //
   //
+
+  /**
+   * Action when the user clicks on the visit website button. Starts a custom tab view to display
+   * the web page.
+   */
   @OnClick(R.id.visitWebsite)
   public void visitWebsite() {
     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();

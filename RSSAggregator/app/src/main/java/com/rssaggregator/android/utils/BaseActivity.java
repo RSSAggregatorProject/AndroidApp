@@ -15,13 +15,13 @@ public class BaseActivity extends AppCompatActivity {
   @Override
   public void finish() {
     super.finish();
-    overridePendingTransitionEnter();
+    overridePendingTransitionExit();
   }
 
   @Override
   public void startActivity(Intent intent) {
     super.startActivity(intent);
-    overridePendingTransitionExit();
+    overridePendingTransitionEnter();
   }
 
   /**

@@ -6,12 +6,15 @@ import com.rssaggregator.android.network.model.Item;
 
 import java.util.List;
 
+/**
+ * Class which containing utility methods for Arrays.
+ */
 public class ArrayUtils {
 
   /**
    * Counts the number of unread items in a category.
    *
-   * @param channelList
+   * @param channelList List of Channels.
    *
    * @return int Number of unreads items.
    */
@@ -30,6 +33,14 @@ public class ArrayUtils {
     return count;
   }
 
+  /**
+   * Gets position of an item in a List of Items.
+   *
+   * @param itemList List of Items
+   * @param item     Item to search
+   *
+   * @return position of the item.
+   */
   public static int getPositionInList(List<Item> itemList, Item item) {
     if (item == null || itemList == null || itemList.size() == 0) {
       return 0;
@@ -42,6 +53,13 @@ public class ArrayUtils {
     return 0;
   }
 
+  /**
+   * Gets the number of unread items.
+   *
+   * @param categories List of categories which contains items.
+   *
+   * @return Number of unread items.
+   */
   public static int getUnreadAllItemsCount(List<Category> categories) {
     int count = 0;
 
@@ -66,6 +84,13 @@ public class ArrayUtils {
     return count;
   }
 
+  /**
+   * Gets the number of starred items.
+   *
+   * @param categories List of categories which contains starred items
+   *
+   * @return Number of starred items.
+   */
   public static int getStarItemsCount(List<Category> categories) {
     int count = 0;
 
@@ -90,6 +115,14 @@ public class ArrayUtils {
     return count;
   }
 
+  /**
+   * Gets a category thanks to its name.
+   *
+   * @param categories   List of Categories to search.
+   * @param categoryName Name of the category to find.
+   *
+   * @return Category found in the list.
+   */
   public static Category getCategoryByName(List<Category> categories, String categoryName) {
     if (categories == null || categories.size() == 0) {
       return null;

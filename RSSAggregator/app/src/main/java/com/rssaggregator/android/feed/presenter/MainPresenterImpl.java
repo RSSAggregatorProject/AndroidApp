@@ -26,6 +26,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Presenter for the Main Activity.
+ */
 public class MainPresenterImpl implements MainPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
@@ -41,17 +44,31 @@ public class MainPresenterImpl implements MainPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets Main View.
+   *
+   * @param mainView Main View.
+   */
   @Override
   public void setMainView(MainView mainView) {
     this.mainView = mainView;
   }
 
+  /**
+   * Sets Database.
+   *
+   * @param context  Context
+   * @param activity Activity.
+   */
   @Override
   public void setDatabase(Context context, Activity activity) {
     this.dataBase = new FeedsDataSource(context);
     this.activity = activity;
   }
 
+  /**
+   * Called when the Main Activity is destroyed.
+   */
   @Override
   public void onDestroy() {
     this.mainView = null;

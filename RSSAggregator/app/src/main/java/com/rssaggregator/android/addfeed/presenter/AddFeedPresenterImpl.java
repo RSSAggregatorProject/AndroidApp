@@ -18,7 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Presenter fot Add Feed View.
+ * Presenter for Add Feed View.
  */
 public class AddFeedPresenterImpl implements AddFeedPresenter {
   private RssApi rssApi;
@@ -33,16 +33,29 @@ public class AddFeedPresenterImpl implements AddFeedPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets Add Feed View.
+   *
+   * @param addFeedView Add Feed View.
+   */
   @Override
   public void setAddFeedView(AddFeedView addFeedView) {
     this.addFeedView = addFeedView;
   }
 
+  /**
+   * Sets database.
+   *
+   * @param context Context.
+   */
   @Override
   public void setDatabase(Context context) {
     this.dataBase = new FeedsDataSource(context);
   }
 
+  /**
+   * Called when the Add Feed Activity is destroyed.
+   */
   @Override
   public void onDestroy() {
     this.addFeedView = null;
