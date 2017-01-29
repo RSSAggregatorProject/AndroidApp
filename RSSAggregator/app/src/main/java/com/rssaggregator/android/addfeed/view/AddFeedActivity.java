@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
@@ -58,7 +59,7 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     injectDependencies();
 
     initializeToolbar();
-    this.presenter.fetchCategories();
+    this.presenter.fetchCategories_Database();
   }
 
   /**
@@ -153,12 +154,19 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
         InputMethodManager imm = (InputMethodManager) getSystemService(
             Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(categoryNameEt.getWindowToken(), 0);
-        if (categoryName.length() == 0) {
-          Snackbar.make(rootViewFl, resources.getString(R.string.create_category_empty_field),
-              Snackbar.LENGTH_SHORT).show();
+        if (categoryName.length() < 2) {
+          Toast.makeText(AddFeedActivity.this,
+              resources.getString(R.string.create_category_empty_field),
+              Toast.LENGTH_SHORT).show();
         } else {
-          presenter.addCategory(categoryName);
-          dialog.dismiss();
+          if (ArrayUtils.getCategoryByName(categories, categoryName) == null) {
+            presenter.addCategory(categoryName);
+            dialog.dismiss();
+          } else {
+            Toast.makeText(AddFeedActivity.this,
+                resources.getString(R.string.create_category_already_existed),
+                Toast.LENGTH_SHORT).show();
+          }
         }
       }
     });
@@ -185,6 +193,8 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     Category category = ArrayUtils.getCategoryByName(this.categories, categoryName);
 
     if (category != null) {
+      Toast.makeText(AddFeedActivity.this,
+          resources.getString(R.string.add_feed_waiting), Toast.LENGTH_SHORT).show();
       this.presenter.addFeed(category, rssLink);
     } else {
       Snackbar.make(this.rootViewFl, resources.getString(R.string.add_feed_category_error),
@@ -207,5 +217,17 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
   @Override
   public void showSnackbarError(String errorMessage) {
     Snackbar.make(this.rootViewFl, errorMessage, Snackbar.LENGTH_SHORT).show();
+  }
+
+  /**
+   * Displays a Snackbar indicating that the category has been created.
+   *
+   * @param categoryName Name of the new category created.
+   */
+  @Override
+  public void updateCategoryCreated(String categoryName) {
+    Snackbar.make(this.rootViewFl,
+        resources.getString(R.string.create_category_success, categoryName),
+        Snackbar.LENGTH_SHORT).show();
   }
 }

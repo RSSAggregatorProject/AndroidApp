@@ -1,6 +1,5 @@
 package com.rssaggregator.android.login.presenter;
 
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.login.view.LoginView;
 import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.event.LogInEvent;
@@ -29,6 +28,11 @@ public class LoginPresenterImpl implements LoginPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets the Login View
+   *
+   * @param loginView Login View.
+   */
   @Override
   public void setLoginView(LoginView loginView) {
     this.loginView = loginView;
@@ -37,8 +41,8 @@ public class LoginPresenterImpl implements LoginPresenter {
   /**
    * Logs In to the application thanks to the API.
    *
-   * @param userEmail
-   * @param userPassword
+   * @param userEmail    email of the user.
+   * @param userPassword password of the user.
    */
   @Override
   public void logIn(String userEmail, String userPassword) {
@@ -49,7 +53,6 @@ public class LoginPresenterImpl implements LoginPresenter {
     if (this.loginView != null) {
       this.loginView.showLoading();
     }
-
     rssApi.logIn(credentials);
   }
 
@@ -68,7 +71,6 @@ public class LoginPresenterImpl implements LoginPresenter {
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(LogInEvent event) {
     if (event.isSuccess()) {
-      Logger.e("TOKEN: " + event.getData().getApiToken());
       AccessToken accessToken = event.getData();
       if (this.loginView != null) {
         this.loginView.loginSuccessful(accessToken);

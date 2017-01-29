@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.rssaggregator.android.R;
 
 /**
+ * Activity to extend to have slide animations when starting and finishing activities.
+ *
  * https://kylewbanks.com/blog/left-and-right-slide-animations-on-android-activity-or-view
  */
 public class BaseActivity extends AppCompatActivity {
@@ -13,13 +15,13 @@ public class BaseActivity extends AppCompatActivity {
   @Override
   public void finish() {
     super.finish();
-    overridePendingTransitionExit();
+    overridePendingTransitionEnter();
   }
 
   @Override
   public void startActivity(Intent intent) {
     super.startActivity(intent);
-    overridePendingTransitionEnter();
+    overridePendingTransitionExit();
   }
 
   /**

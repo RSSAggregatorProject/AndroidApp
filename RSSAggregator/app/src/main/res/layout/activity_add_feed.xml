@@ -55,7 +55,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/keyline_72"
-                android:layout_marginTop="@dimen/keyline_24"
+                android:layout_marginTop="@dimen/keyline_48"
                 >
 
                 <android.support.v7.widget.AppCompatImageView
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/keyline_8"
-                        android:text="Category"
+                        android:text="@string/category"
                         />
 
                 </LinearLayout>

@@ -10,6 +10,10 @@ import com.rssaggregator.android.network.module.ApiClientModule;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+/**
+ * Application of the project RSSAggreagator. It creates and initializes the modules and singletons
+ * by using Dagger 2.0.
+ */
 public class RssAggregatorApplication extends Application {
 
   AppComponent appComponent;

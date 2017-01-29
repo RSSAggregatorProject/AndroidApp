@@ -51,8 +51,8 @@
             android:layout_alignParentEnd="true"
             android:background="?android:attr/selectableItemBackground"
             android:padding="@dimen/keyline_8"
-            android:src="@drawable/ic_power_settings_new_white_24dp"
-            app:srcCompat="@drawable/ic_power_settings_new_white_24dp"
+            android:src="@drawable/ic_settings_white_24dp"
+            app:srcCompat="@drawable/ic_settings_white_24dp"
             />
 
     </RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.rssaggregator.android.R;
@@ -118,26 +119,41 @@ public class SignUpFragment extends Fragment implements SignUpView {
   // Methods called from the Presenter.
   //
   //
+
+  /**
+   * Shows a loading view.
+   */
   @Override
   public void showLoading() {
     this.signUpBt.setProgress(30);
   }
 
+  /**
+   * Shows a Snackbar Error
+   *
+   * @param errorMessage Error Message.
+   */
   @Override
   public void showErrorSnackbar(String errorMessage) {
     this.signUpBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_LONG).show();
   }
 
+  /**
+   * Restarts the activity to go to login view after signing up succeed.
+   */
   @Override
   public void signUpSuccessful() {
     this.signUpBt.setProgress(100);
+
+    Toast.makeText(activity, getString(R.string.login_signup_success),
+        Toast.LENGTH_SHORT).show();
 
     Intent intent = new Intent(activity, LoginActivity.class);
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_USERNAME, emailEt.getText().toString());
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_PASSWORD, passwordEt.getText().toString());
 
-    getActivity().finish();
+    activity.finish();
     startActivity(intent);
   }
 }

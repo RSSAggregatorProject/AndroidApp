@@ -30,7 +30,7 @@
             android:id="@+id/rssLink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Rss Feed"
+            android:hint="@string/rss_link_hint"
             android:inputType="textLongMessage"
             />
     </android.support.design.widget.TextInputLayout>

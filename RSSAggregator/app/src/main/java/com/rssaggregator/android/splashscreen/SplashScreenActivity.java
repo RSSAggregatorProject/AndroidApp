@@ -19,7 +19,7 @@ import com.rssaggregator.android.utils.SharedPreferencesUtils;
 import org.greenrobot.eventbus.EventBus;
 
 /**
- * Activity for Splash Screen.
+ * Activity for Splash Screen View.
  */
 public class SplashScreenActivity extends BaseActivity {
 
@@ -50,6 +50,10 @@ public class SplashScreenActivity extends BaseActivity {
       @Override
       public void run() {
         String apiToken = SharedPreferencesUtils.getApiToken(SplashScreenActivity.this);
+
+        /**
+         * Checks if the user is already connected.
+         */
         if (apiToken == null || apiToken.length() == 0) {
           Intent loginIntent = new Intent(SplashScreenActivity.this, LoginActivity.class);
           startActivity(loginIntent);

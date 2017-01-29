@@ -27,16 +27,15 @@ import com.rssaggregator.android.feed.event.ItemClickedEvent;
 import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.feed.presenter.MainPresenterImpl;
 import com.rssaggregator.android.feed.view.MainView;
-import com.rssaggregator.android.login.LoginActivity;
 import com.rssaggregator.android.navigationdrawer.ExpandableListAdapter;
 import com.rssaggregator.android.network.event.AccessTokenFetchedEvent;
-import com.rssaggregator.android.network.event.LogOutEvent;
 import com.rssaggregator.android.network.model.AccessToken;
 import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
 import com.rssaggregator.android.network.utils.TokenRequestInterceptor;
+import com.rssaggregator.android.settings.SettingsActivity;
 import com.rssaggregator.android.utils.ArrayUtils;
 import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.Globals;
@@ -312,10 +311,8 @@ public class MainActivity extends BaseActivity implements MainView {
     logoutButtonIg.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        eventBus.post(new LogOutEvent());
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
-        finish();
       }
     });
   }
@@ -436,6 +433,11 @@ public class MainActivity extends BaseActivity implements MainView {
    */
   @Override
   public void showSnackBarError(String errorMessage) {
+    this.contentView.setVisibility(View.VISIBLE);
+    this.loadingView.setVisibility(View.GONE);
+    this.errorView.setVisibility(View.GONE);
+    this.emptyView.setVisibility(View.GONE);
+
     String error;
     if (errorMessage != null && errorMessage.length() != 0) {
       error = errorMessage;

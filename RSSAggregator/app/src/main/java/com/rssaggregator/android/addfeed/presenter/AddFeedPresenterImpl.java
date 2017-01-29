@@ -53,7 +53,7 @@ public class AddFeedPresenterImpl implements AddFeedPresenter {
    * Fetches categories from the database.
    */
   @Override
-  public void fetchCategories() {
+  public void fetchCategories_Database() {
     List<Category> categoryList = this.dataBase.selectAllCategories();
     this.addFeedView.setCategoriesToSpinner(categoryList);
   }
@@ -92,7 +92,8 @@ public class AddFeedPresenterImpl implements AddFeedPresenter {
         Category category = event.getData();
         category.setUnread(0);
         this.dataBase.insertCategory(category);
-        fetchCategories();
+        fetchCategories_Database();
+        this.addFeedView.updateCategoryCreated(category.getName());
       }
     } else {
       if (this.addFeedView != null) {

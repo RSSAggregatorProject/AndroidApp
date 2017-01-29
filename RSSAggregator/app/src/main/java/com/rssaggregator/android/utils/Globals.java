@@ -5,7 +5,7 @@ public class Globals {
   /**
    * API urls.
    */
-  public static final String API_URL = "http://dreamteamrssfeader.ddns.net:8080/rssserver/";
+  public static final String API_URL = "http://dreamteamrssfeader.ddns.net:8080/rssserver/api/";
 
   /**
    * PREFERNCES KEYS

@@ -77,12 +77,6 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setMode(ActionProcessButton.Mode.ENDLESS);
     this.loginBt.setProgress(0);
     injectDependencies();
-
-    /**
-     * TEMP
-     */
-    this.emailEt.setText("iralala");
-    this.passwordEt.setText("iralala");
   }
 
   @Override
@@ -101,7 +95,7 @@ public class LoginFragment extends Fragment implements LoginView {
   }
 
   /**
-   * Set the fields to the user preferences if there are.
+   * Sets the fields to the user preferences if there are.
    */
   private void setFields() {
     if (loginUser != null && passwordUser != null) {
@@ -150,26 +144,41 @@ public class LoginFragment extends Fragment implements LoginView {
   // Methods called by the presenter.
   //
   //
+
+  /**
+   * Shows a loading View (Progress Bar).
+   */
   @Override
   public void showLoading() {
     this.loginBt.setProgress(30);
   }
 
+  /**
+   * Shows a Snackbar Error.
+   *
+   * @param errorMessage Error Message.
+   */
   @Override
   public void showErrorSnackbar(String errorMessage) {
     this.loginBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_SHORT).show();
   }
 
+  /**
+   * Saves user preferences and starts main activity after login succeed.
+   *
+   * @param accessToken information about the user log.
+   */
   @Override
   public void loginSuccessful(AccessToken accessToken) {
     this.loginBt.setProgress(100);
 
-    // Set Shared Preferences
+    // Sets Shared Preferences
     SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
     SharedPreferencesUtils.setApiToken(getActivity(), accessToken.getApiToken());
     SharedPreferencesUtils.setUserId(getActivity(), accessToken.getUserId());
 
+    // Starts the main activity
     Intent intent = new Intent(getActivity(), MainActivity.class);
     startActivity(intent);
     getActivity().finish();

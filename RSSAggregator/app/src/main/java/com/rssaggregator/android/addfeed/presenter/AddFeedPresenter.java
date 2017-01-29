@@ -16,7 +16,7 @@ public interface AddFeedPresenter {
 
   void addFeed(Category category, String rssLink);
 
-  void fetchCategories();
+  void fetchCategories_Database();
 
   void addCategory(String categoryName);
 

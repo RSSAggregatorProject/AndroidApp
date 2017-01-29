@@ -33,16 +33,29 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets the Item Details View.
+   *
+   * @param itemDetailsView Item Details View.
+   */
   @Override
   public void setItemDetailsView(ItemDetailsView itemDetailsView) {
     this.itemDetailsView = itemDetailsView;
   }
 
+  /**
+   * Sets the database.
+   *
+   * @param context Context.
+   */
   @Override
   public void setDatabase(Context context) {
     this.dataBase = new FeedsDataSource(context);
   }
 
+  /**
+   * Called when the Item Details Activity is destroyed.
+   */
   @Override
   public void onDestroy() {
     this.itemDetailsView = null;
@@ -57,8 +70,14 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   @Override
   public void updateReadItem(Item item) {
     this.item = item;
+    // Pass the item to read state in any case.
     updateReadItemById_Database(this.item);
-    this.rssApi.updateReadStateItem(item, true);
+
+    if (this.item.isRead()) {
+      this.rssApi.updateReadStateItem(item, false);
+    } else {
+      this.rssApi.updateReadStateItem(item, true);
+    }
   }
 
   /**
@@ -72,8 +91,11 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
 
     if (item.isStarred()) {
       this.rssApi.updateStarStateItem(item, false);
+      updateStarItemById_Database(this.item);
     } else {
       this.rssApi.updateStarStateItem(item, true);
+      updateStarItemById_Database(this.item);
+
     }
   }
 
@@ -83,7 +105,11 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
    * @param item Item to update.
    */
   private void updateReadItemById_Database(Item item) {
-    this.dataBase.updateReadStateItem(item, true);
+    if (this.item.isRead()) {
+      this.dataBase.updateReadStateItem(item, false);
+    } else {
+      this.dataBase.updateReadStateItem(item, true);
+    }
   }
 
   /**
@@ -104,15 +130,13 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   public void onMessageEvent(UpdateReadStateItemEvent event) {
     if (event.isSuccess()) {
       if (this.itemDetailsView != null) {
-        updateReadItemById_Database(this.item);
+        this.itemDetailsView.updateItemRead(this.item.isRead());
         this.item = null;
-        this.itemDetailsView.updateItemRead();
       }
     } else {
-      updateReadItemById_Database(this.item);
+      this.itemDetailsView.showSnackBarError();
+      this.itemDetailsView.updateItemRead(this.item.isRead());
       this.item = null;
-      this.itemDetailsView.updateItemRead();
-      this.itemDetailsView.showSnackBarError(event.getThrowable().getMessage());
     }
   }
 
@@ -121,12 +145,13 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
   public void onMessageEvent(UpdateStarStateItemEvent event) {
     if (event.isSuccess()) {
       if (this.itemDetailsView != null) {
-        updateStarItemById_Database(this.item);
         this.itemDetailsView.updateItemStarred(this.item.isStarred());
         this.item = null;
       }
     } else {
-      this.itemDetailsView.showSnackBarError(event.getThrowable().getMessage());
+      this.itemDetailsView.showSnackBarError();
+      this.itemDetailsView.updateItemStarred(this.item.isStarred());
+      this.item = null;
     }
   }
 }

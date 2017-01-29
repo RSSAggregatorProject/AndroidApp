@@ -47,7 +47,11 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
 
   private Item item;
 
+  /**
+   * Menu Items.
+   */
   private MenuItem starItem;
+  private MenuItem readItem;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,7 +72,7 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
           Snackbar.LENGTH_SHORT).show();
     }
 
-    if (this.item != null) {
+    if (this.item != null && !this.item.isRead()) {
       this.presenter.updateReadItem(this.item);
     }
   }
@@ -119,21 +123,37 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_item_details, menu);
     this.starItem = menu.findItem(R.id.action_star_item);
+    this.readItem = menu.findItem(R.id.action_see_item);
 
     if (item.isStarred()) {
       this.starItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white_24dp));
     } else {
       this.starItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_border_white_24dp));
     }
+
+    if (item.isRead()) {
+      this.readItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp));
+    } else {
+      this.readItem.setIcon(ContextCompat.getDrawable(this,
+          R.drawable.ic_visibility_off_white_24dp));
+    }
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) {
-      this.finish();
-    } else if (item.getItemId() == R.id.action_star_item) {
-      this.presenter.updateStarStateItem(this.item);
+    int id = item.getItemId();
+
+    switch (id) {
+      case android.R.id.home:
+        this.finish();
+        break;
+      case R.id.action_star_item:
+        this.presenter.updateStarStateItem(this.item);
+        break;
+      case R.id.action_see_item:
+        this.presenter.updateReadItem(this.item);
+        break;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -148,8 +168,20 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
    * Updates the item after a updateReadState succeed.
    */
   @Override
-  public void updateItemRead() {
-    this.item.setRead(true);
+  public void updateItemRead(boolean oldState) {
+    if (oldState) {
+      this.item.setRead(false);
+      if (this.readItem != null) {
+        this.readItem.setIcon(ContextCompat.getDrawable(this,
+            R.drawable.ic_visibility_off_white_24dp));
+      }
+    } else {
+      this.item.setRead(true);
+      if (this.readItem != null) {
+        this.readItem.setIcon(ContextCompat.getDrawable(this,
+            R.drawable.ic_visibility_white_24dp));
+      }
+    }
   }
 
   /**
@@ -168,9 +200,13 @@ public class ItemDetailsActivity extends BaseActivity implements ItemDetailsView
     }
   }
 
+  /**
+   * Shows a SnackBar Error.
+   */
   @Override
-  public void showSnackBarError(String errorMessage) {
-    Snackbar.make(this.rootViewSv, errorMessage, Snackbar.LENGTH_LONG).show();
+  public void showSnackBarError() {
+    Snackbar.make(this.rootViewSv, getString(R.string.error_star_item),
+        Snackbar.LENGTH_LONG).show();
   }
 
   //

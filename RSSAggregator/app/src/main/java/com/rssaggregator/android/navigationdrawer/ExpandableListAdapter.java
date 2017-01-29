@@ -124,7 +124,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     } else if (resources.getString(R.string.category_star).equals(category.getName())) {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_star_black_24dp);
     } else {
-      viewHolder.iconCategory.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+      if (category.getChannels() == null || category.getChannels().size() == 0) {
+        viewHolder.iconCategory.setImageDrawable(null);
+      } else {
+        viewHolder.iconCategory.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+      }
     }
 
     if (resources.getString(R.string.category_all).equals(category.getName())) {

@@ -2,6 +2,9 @@ package com.rssaggregator.android.network.model;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * Class which represents the body for API requests Login and Sign up.
+ */
 public class Credentials {
 
   @Expose

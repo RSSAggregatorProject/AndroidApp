@@ -8,4 +8,10 @@
         android:title="@string/action_star_item"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_see_item"
+        android:icon="@drawable/ic_visibility_off_white_24dp"
+        android:title="@string/action_see_item"
+        app:showAsAction="ifRoom" />
+
 </menu>

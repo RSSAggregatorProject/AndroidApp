@@ -3,6 +3,9 @@ package com.rssaggregator.android.network.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Class which represents the body for the API request add/subscribe feed.
+ */
 public class AddFeedWrapper {
 
   @SerializedName("id_cat")

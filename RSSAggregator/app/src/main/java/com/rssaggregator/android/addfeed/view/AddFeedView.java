@@ -14,4 +14,6 @@ public interface AddFeedView {
   void showSnackbarError(String errorMessage);
 
   void setCategoriesToSpinner(List<Category> data);
+
+  void updateCategoryCreated(String categoryName);
 }

@@ -5,9 +5,9 @@ package com.rssaggregator.android.feeddetails.view;
  */
 public interface ItemDetailsView {
 
-  void updateItemRead();
+  void updateItemRead(boolean oldState);
 
   void updateItemStarred(Boolean oldState);
 
-  void showSnackBarError(String errorMessage);
+  void showSnackBarError();
 }

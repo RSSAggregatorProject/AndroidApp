@@ -27,6 +27,11 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets the Sign Up View.
+   *
+   * @param signUpView Sign Up View.
+   */
   @Override
   public void setSignUpView(SignUpView signUpView) {
     this.signUpView = signUpView;
@@ -35,8 +40,8 @@ public class SignUpPresenterImpl implements SignUpPresenter {
   /**
    * Signs Up to the application thanks to the API.
    *
-   * @param userEmail
-   * @param userPassword
+   * @param userEmail    email of the user
+   * @param userPassword password of the user
    */
   @Override
   public void signUp(String userEmail, String userPassword) {
