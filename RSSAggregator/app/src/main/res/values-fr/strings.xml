@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">RSS Aggregator</string>
 
+    <!--ACTIVITY NAME-->
+    <string name="add_feed_title_activity">Ajouter un flux RSS</string>
+    <string name="settings_activity">Paramètres</string>
+
     <!--LOGIN VIEWS-->
     <string name="login_tab_login">Connexion</string>
     <string name="login_tab_signup">Inscription</string>
@@ -15,9 +19,87 @@
     <string name="login_empty_email">Veillez renseigner le champ \"Email\" svp !</string>
     <string name="login_empty_password">Veillez renseigner le champ \"Mot de passe\" svp !</string>
 
+    <!--LOGIN-->
+    <string name="login_signup_success">Inscription réussie !</string>
 
     <!--NAVIGATION DRAWER -->
     <string name="category_all">Tous</string>
     <string name="category_star">Articles favoris</string>
+    <string name="category_channel">%1$s / %2$s</string>
+
+    <!--ACTION -->
+    <string name="action_add_channel">Ajouter un flux</string>
+    <string name="action_refresh">Rafraîchir</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_unsubscribe_channel">Désinscrire du flux RSS</string>
+    <string name="action_mark_as_read">Mettre articles en état lu</string>
+    <string name="action_star_item">Sauvegarder l\'article</string>
+
+    <!-- String for FormatterTime -->
+    <string name="future_time_formatter">Dans le futur</string>
+    <string name="unknown_date_formatter">Date inconnue</string>
+    <string name="now_time_formatter">Maintenant</string>
+    <plurals name="minute_time_formatter">
+        <item quantity="one">Il y a %1$d minute</item>
+        <item quantity="other">Il y a %1$d minutes</item>
+    </plurals>
+    <plurals name="hour_time_formatter">
+        <item quantity="one">Il y a %1$d heure</item>
+        <item quantity="other">Il y a %1$d heures</item>
+    </plurals>
+    <string name="yesterday_time_formatter">Hier, à %1$s</string>
+    <string name="at_time_formatter">%1$s, à %2$s</string>
+    <string name="day_time_formatter">EEEE</string>
+    <string name="time_formatter">H:mm</string>
+    <string name="month_time_formatter">d MMMM</string>
+    <string name="full_time_formatter">d MMMM yyyy</string>
+    <string name="digital_date_formatter">dd/MM/yyyy</string>
+    <string name="full_date_formatter">EEEE, d MMMM, yyyy</string>
+
+    <!--ERROR MESSAGES-->
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="network_error">Vérifiez votre connexion Internet</string>
+    <string name="empty_items">Pas d\'articles dans cette catégorie.</string>
+    <string name="empty_star_items">Pas d\'articles sauvegardés. Sauvegardez en quelques
+        uns</string>
+    <string name="empty_channel_items">Pas d\'articles dans ce flux.</string>
+
+    <!--FEEDS-->
+    <string name="unsubscribe_feed_success">Vous vous êtes désabonné du flux RSS !\n
+    Mise à jour des flux!</string>
+
+    <!--ADD FEEDS-->
+    <string name="add_feed_success">Vous êtes maintenant inscrit au flux !</string>
+    <string name="create_new_category">Créer une nouvelle catégorie</string>
+
+
+    <!--SETTINGS ACTIVITY-->
+    <string name="key_profile_category">key_profile</string>
+    <string name="key_name_profile">key_name_profile</string>
+    <string name="key_logout">key_logout</string>
+    <string name="key_about_category">key_about</string>
+    <string name="key_version">key_version</string>
+    <string name="summary_version">1.0</string>
+
+    <string name="title_profile_category">Mon Profil</string>
+    <string name="title_logout">Se déconnecter</string>
+    <string name="title_about_category">A Propos</string>
+    <string name="title_version">Version</string>
+    <string name="add">Ajouter</string>
+    <string name="add_category">Ajouter une catégorie</string>
+    <string name="add_feed_category_error">Selectionnez une catégorie valide svp !</string>
+    <string name="add_feed_rss_field_empty">Remplissez le champ Lien RSS svp !</string>
+    <string name="cancel">Annuler</string>
+    <string name="create_category_empty_field">Remplissez le champ Categorie svp !</string>
+    <string name="item_details_null">Erreur en téléchargeant l\'article</string>
+    <string name="category">Catégorie</string>
+    <string name="rss_link_hint">Flux RSS</string>
+    <string name="create_category_success">La catégorie %1$s a été créée avec succès</string>
+    <string name="create_category_already_existed">La catégorie existe déjà !</string>
+    <string name="add_feed_waiting">Le flux RSS est en cours d\'ajout !</string>
+    <string name="error_star_item">Connexion au serveur impossible ! Votre article sera sauvegardé localement uniquement.</string>
+    <string name="action_see_item">Marquer comme lu/non lu</string>
+    <string name="key_show_all">key_show_all</string>
+    <string name="show_all">Montrer uniquement  les articles non lus.</string>
 
 </resources>

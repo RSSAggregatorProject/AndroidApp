@@ -1,12 +1,39 @@
 package com.rssaggregator.android.feed.view;
 
 import com.rssaggregator.android.network.model.CategoriesWrapper;
+import com.rssaggregator.android.network.model.Category;
+import com.rssaggregator.android.network.model.Channel;
+import com.rssaggregator.android.network.model.Item;
+
+import java.util.HashMap;
+import java.util.List;
 
 public interface MainView {
 
   void showLoading();
 
-  void showError(String errorMessage);
+  void showSnackBarError(String errorMessage);
 
-  void showContent(CategoriesWrapper wrapper);
+  void setNavigationContent_Online(CategoriesWrapper wrapper);
+
+  void showAllItemsContent(List<Item> data);
+
+  void showStarredItemsContent(List<Item> data);
+
+  void showItemsByCategoryIdContent(List<Item> data);
+
+  void showItemsByChannelIdContent(List<Item> data);
+
+  /**
+   * Success methods
+   */
+  void unsubscribeChannelSuccess();
+
+
+  /**
+   * Offline methods
+   */
+  void setNavigationContent_Offline(List<Category> categories,
+                                    HashMap<Category, List<Channel>> channels);
+
 }

@@ -14,31 +14,47 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.MainActivity;
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
 import com.rssaggregator.android.dependency.AppComponent;
 import com.rssaggregator.android.login.presenter.LoginPresenterImpl;
 import com.rssaggregator.android.network.model.AccessToken;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Fragment for the login view.
+ */
 public class LoginFragment extends Fragment implements LoginView {
 
+  /**
+   * View attributes.
+   */
   @BindView(R.id.rootView) RelativeLayout rootViewRl;
   @BindView(R.id.emailLoginEt) AppCompatEditText emailEt;
   @BindView(R.id.passwordLoginEt) AppCompatEditText passwordEt;
   @BindView(R.id.buttonLogin) ActionProcessButton loginBt;
 
-  private AppComponent appComponent;
   private LoginPresenterImpl presenter;
 
+  /**
+   * Data
+   */
   private static String loginUser;
   private static String passwordUser;
 
+  /**
+   * Create a new instance of LoginFragment
+   *
+   * @param login
+   * @param password
+   *
+   * @return Fragment LoginFragment.
+   */
   public static LoginFragment newInstance(String login, String password) {
     loginUser = login;
     passwordUser = password;
@@ -61,9 +77,6 @@ public class LoginFragment extends Fragment implements LoginView {
     this.loginBt.setMode(ActionProcessButton.Mode.ENDLESS);
     this.loginBt.setProgress(0);
     injectDependencies();
-
-    this.emailEt.setText("ok");
-    this.passwordEt.setText("ok");
   }
 
   @Override
@@ -72,14 +85,17 @@ public class LoginFragment extends Fragment implements LoginView {
     super.onDestroyView();
   }
 
+  /**
+   * Injects dependencies.
+   */
   private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
+    AppComponent appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
     this.presenter = appComponent.loginPresenterImpl();
     this.presenter.setLoginView(this);
   }
 
   /**
-   * Set the fields to the user preferences if there are.
+   * Sets the fields to the user preferences if there are.
    */
   private void setFields() {
     if (loginUser != null && passwordUser != null) {
@@ -109,6 +125,9 @@ public class LoginFragment extends Fragment implements LoginView {
     return true;
   }
 
+  /**
+   * Handles action, logs in to the application.
+   */
   @OnClick(R.id.buttonLogin)
   public void login() {
     if (!verifyFields()) {
@@ -125,26 +144,43 @@ public class LoginFragment extends Fragment implements LoginView {
   // Methods called by the presenter.
   //
   //
+
+  /**
+   * Shows a loading View (Progress Bar).
+   */
   @Override
   public void showLoading() {
     this.loginBt.setProgress(30);
   }
 
+  /**
+   * Shows a Snackbar Error.
+   *
+   * @param errorMessage Error Message.
+   */
   @Override
   public void showErrorSnackbar(String errorMessage) {
     this.loginBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_SHORT).show();
-    Intent intent = new Intent(getActivity(), MainActivity.class);
-    getActivity().startActivity(intent);
-    getActivity().finish();
   }
 
+  /**
+   * Saves user preferences and starts main activity after login succeed.
+   *
+   * @param accessToken information about the user log.
+   */
   @Override
   public void loginSuccessful(AccessToken accessToken) {
     this.loginBt.setProgress(100);
+
+    // Sets Shared Preferences
+    SharedPreferencesUtils.setUserEmail(getActivity(), emailEt.getText().toString());
+    SharedPreferencesUtils.setApiToken(getActivity(), accessToken.getApiToken());
+    SharedPreferencesUtils.setUserId(getActivity(), accessToken.getUserId());
+
+    // Starts the main activity
     Intent intent = new Intent(getActivity(), MainActivity.class);
     startActivity(intent);
     getActivity().finish();
-    Logger.e("Logged: " + accessToken.getToken() + " | " + accessToken.getEmail());
   }
 }

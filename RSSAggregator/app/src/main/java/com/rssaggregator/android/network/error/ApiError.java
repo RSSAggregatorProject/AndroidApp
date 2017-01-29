@@ -5,18 +5,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class ApiError {
   @Expose
-  @SerializedName("error_code")
-  private int code;
+  @SerializedName("status")
+  private String status;
   @Expose
   @SerializedName("error")
   private String errorDetails;
 
-  public int getCode() {
-    return code;
+  public String getStatus() {
+    return status;
   }
 
-  public void setCode(int code) {
-    this.code = code;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public String getErrorDetails() {

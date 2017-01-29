@@ -8,12 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
+import com.rssaggregator.android.utils.ArrayUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,9 +23,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Adapter for expandable list view.
+ */
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-  private ExpandableListView expandableListView;
   private Context context;
   private Resources resources;
 
@@ -37,13 +39,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
   private EventBus eventBus;
 
   public ExpandableListAdapter(Context context, List<Category> categoryList,
-                               HashMap<Category, List<Channel>> channelList,
-                               ExpandableListView expandableListView, EventBus eventBus) {
+                               HashMap<Category, List<Channel>> channelList, EventBus eventBus) {
     this.context = context;
     this.resources = context.getResources();
     this.categoryList = categoryList;
     this.channelList = channelList;
-    this.expandableListView = expandableListView;
     this.eventBus = eventBus;
   }
 
@@ -104,13 +104,31 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     viewHolder.nameCategory.setText(category.getName());
 
+    // Set unread items
+    if (resources.getString(R.string.category_all).equals(category.getName())) {
+      if (category.getUnread() != null) {
+        viewHolder.unreadCategory.setText(String.valueOf(category.getUnread()));
+      }
+    } else if (resources.getString(R.string.category_star).equals(category.getName())) {
+      if (category.getUnread() != null) {
+        viewHolder.unreadCategory.setText(String.valueOf(category.getUnread()));
+      }
+    } else {
+      viewHolder.unreadCategory.setText(String.valueOf(
+          ArrayUtils.getUnreadCategories(category.getChannels())));
+    }
+
     // Set All and Starred categories
     if (resources.getString(R.string.category_all).equals(category.getName())) {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_all_inclusive_black_24dp);
     } else if (resources.getString(R.string.category_star).equals(category.getName())) {
       viewHolder.iconCategory.setImageResource(R.drawable.ic_star_black_24dp);
     } else {
-      viewHolder.iconCategory.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+      if (category.getChannels() == null || category.getChannels().size() == 0) {
+        viewHolder.iconCategory.setImageDrawable(null);
+      } else {
+        viewHolder.iconCategory.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+      }
     }
 
     if (resources.getString(R.string.category_all).equals(category.getName())) {
@@ -160,7 +178,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     viewHolder.nameChannel.setText(channel.getName());
-    viewHolder.unreadChannel.setText(String.valueOf(channel.getUnread()));
+
+    if (channel.getUnread() == null) {
+      viewHolder.unreadChannel.setText("0");
+    } else {
+      viewHolder.unreadChannel.setText(String.valueOf(channel.getUnread()));
+    }
 
     viewHolder.rowChannel.setOnClickListener(new View.OnClickListener() {
       @Override

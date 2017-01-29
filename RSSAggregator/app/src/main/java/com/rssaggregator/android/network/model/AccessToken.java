@@ -3,47 +3,54 @@ package com.rssaggregator.android.network.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
+/**
+ * User Information.
+ */
 public class AccessToken {
-  @SerializedName("api_key")
+
   @Expose
-  private String token;
+  private String status;
+  @SerializedName("id_user")
   @Expose
-  private String email;
+  private Integer userId;
+  @SerializedName("token")
   @Expose
-  private String pseudo;
-  @SerializedName("id")
+  private String apiToken;
+  @SerializedName("exp_date")
   @Expose
-  private Integer idUser;
+  private Date expirationDate;
 
-  public String getToken() {
-    return token;
+  public String getStatus() {
+    return status;
   }
 
-  public void setToken(String token) {
-    this.token = token;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
-  public String getEmail() {
-    return email;
+  public Integer getUserId() {
+    return userId;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setUserId(Integer userId) {
+    this.userId = userId;
   }
 
-  public String getPseudo() {
-    return pseudo;
+  public String getApiToken() {
+    return apiToken;
   }
 
-  public void setPseudo(String pseudo) {
-    this.pseudo = pseudo;
+  public void setApiToken(String apiToken) {
+    this.apiToken = apiToken;
   }
 
-  public Integer getIdUser() {
-    return idUser;
+  public Date getExpirationDate() {
+    return expirationDate;
   }
 
-  public void setIdUser(Integer idUser) {
-    this.idUser = idUser;
+  public void setExpirationDate(Date expirationDate) {
+    this.expirationDate = expirationDate;
   }
 }

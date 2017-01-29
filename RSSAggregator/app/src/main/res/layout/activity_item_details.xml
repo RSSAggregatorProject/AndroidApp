@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/rootView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/titleItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/keyline_16"
+            android:textColor="#212121"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            tools:text="Evra à l'OM, c'est signé"
+            />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pubDateItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:gravity="end|center_vertical"
+            android:padding="@dimen/keyline_8"
+            android:textStyle="italic"
+            tools:text="Il y a 5 heures."
+            />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/nameChannelItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:gravity="start|center_vertical"
+            android:padding="@dimen/keyline_8"
+            android:textColor="#FF9800"
+            android:textStyle="bold"
+            tools:text="Eurosport.fr"
+            />
+
+        <WebView
+            android:id="@+id/descriptionItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/keyline_16"
+            android:layout_marginEnd="@dimen/keyline_16"
+            android:layout_marginStart="@dimen/keyline_16"
+            android:layout_marginTop="@dimen/keyline_48"
+            />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/visitWebsite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/keyline_8"
+            android:layout_marginBottom="@dimen/keyline_48"
+            android:text="VISIT THE WEBSITE"
+            />
+
+    </LinearLayout>
+
+</ScrollView>

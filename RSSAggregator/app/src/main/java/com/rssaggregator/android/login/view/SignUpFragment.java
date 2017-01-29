@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.rssaggregator.android.R;
@@ -25,16 +26,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Fragment for the Sign Up View.
+ */
 public class SignUpFragment extends Fragment implements SignUpView {
 
+  /**
+   * View attributes.
+   */
   @BindView(R.id.rootView) RelativeLayout rootViewRl;
-  @BindView(R.id.emailEt) AppCompatEditText emailEt;
-  @BindView(R.id.passwordEt) AppCompatEditText passwordEt;
+  @BindView(R.id.emailSignUpEt) AppCompatEditText emailEt;
+  @BindView(R.id.passwordSignUpEt) AppCompatEditText passwordEt;
   @BindView(R.id.buttonSignUp) ActionProcessButton signUpBt;
 
-  private AppComponent appComponent;
   private SignUpPresenterImpl presenter;
 
+  private LoginActivity activity;
+
+  /**
+   * Create a new instance of SignUpFragment.
+   *
+   * @return Fragment SignUpFragment.
+   */
   public static SignUpFragment newInstance() {
     return new SignUpFragment();
   }
@@ -51,17 +64,24 @@ public class SignUpFragment extends Fragment implements SignUpView {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    this.activity = (LoginActivity) getActivity();
     this.signUpBt.setMode(ActionProcessButton.Mode.ENDLESS);
     this.signUpBt.setProgress(0);
     injectDependencies();
   }
 
+  /**
+   * Injects dependencies
+   */
   private void injectDependencies() {
-    this.appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
+    AppComponent appComponent = RssAggregatorApplication.get(getActivity()).getAppComponent();
     this.presenter = appComponent.signUpPresenterImpl();
     this.presenter.setSignUpView(this);
   }
 
+  /**
+   * Handles action, user signs up to the application.
+   */
   @OnClick(R.id.buttonSignUp)
   public void signUp() {
     if (!verifyFields()) {
@@ -99,24 +119,41 @@ public class SignUpFragment extends Fragment implements SignUpView {
   // Methods called from the Presenter.
   //
   //
+
+  /**
+   * Shows a loading view.
+   */
   @Override
   public void showLoading() {
     this.signUpBt.setProgress(30);
   }
 
+  /**
+   * Shows a Snackbar Error
+   *
+   * @param errorMessage Error Message.
+   */
   @Override
   public void showErrorSnackbar(String errorMessage) {
     this.signUpBt.setProgress(0);
     Snackbar.make(this.rootViewRl, errorMessage, Snackbar.LENGTH_LONG).show();
   }
 
+  /**
+   * Restarts the activity to go to login view after signing up succeed.
+   */
   @Override
   public void signUpSuccessful() {
     this.signUpBt.setProgress(100);
-    Intent intent = new Intent(getActivity(), LoginActivity.class);
+
+    Toast.makeText(activity, getString(R.string.login_signup_success),
+        Toast.LENGTH_SHORT).show();
+
+    Intent intent = new Intent(activity, LoginActivity.class);
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_USERNAME, emailEt.getText().toString());
     intent.putExtra(Globals.EXTRA_KEY_SIGNUP_PASSWORD, passwordEt.getText().toString());
-    getActivity().finish();
+
+    activity.finish();
     startActivity(intent);
   }
 }

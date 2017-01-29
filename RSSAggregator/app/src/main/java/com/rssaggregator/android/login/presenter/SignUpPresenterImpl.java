@@ -1,11 +1,8 @@
 package com.rssaggregator.android.login.presenter;
 
-import com.orhanobut.logger.Logger;
 import com.rssaggregator.android.login.view.SignUpView;
 import com.rssaggregator.android.network.RssApi;
-import com.rssaggregator.android.network.event.LogInEvent;
 import com.rssaggregator.android.network.event.SignUpEvent;
-import com.rssaggregator.android.network.model.AccessToken;
 import com.rssaggregator.android.network.model.Credentials;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,6 +11,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
+/**
+ * Class which represents the Presenter of the Sign Up View. Requests data to the API and sends it
+ * to the view.
+ */
 public class SignUpPresenterImpl implements SignUpPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
@@ -26,11 +27,22 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     this.eventBus.register(this);
   }
 
+  /**
+   * Sets the Sign Up View.
+   *
+   * @param signUpView Sign Up View.
+   */
   @Override
   public void setSignUpView(SignUpView signUpView) {
     this.signUpView = signUpView;
   }
 
+  /**
+   * Signs Up to the application thanks to the API.
+   *
+   * @param userEmail    email of the user
+   * @param userPassword password of the user
+   */
   @Override
   public void signUp(String userEmail, String userPassword) {
     if (this.signUpView != null) {
@@ -38,11 +50,10 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     }
 
     Credentials credentials = new Credentials();
-    credentials.setLogin(userEmail);
+    credentials.setEmail(userEmail);
     credentials.setPassword(userPassword);
 
-//    this.rssApi.signUp(credentials);
-    this.rssApi.logIn(credentials);
+    this.rssApi.signUp(credentials);
   }
 
   @Override
@@ -51,6 +62,11 @@ public class SignUpPresenterImpl implements SignUpPresenter {
     this.eventBus.unregister(this);
   }
 
+  //
+  //
+  // OnEvent Methods.
+  //
+  //
   @SuppressWarnings("UnusedDeclaration")
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void onMessageEvent(SignUpEvent event) {
@@ -64,21 +80,4 @@ public class SignUpPresenterImpl implements SignUpPresenter {
       }
     }
   }
-
-/*
-  @SuppressWarnings("UnusedDeclaration")
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onMessageEvent(LogInEvent event) {
-    if (event.isSuccess()) {
-      Logger.e("TOKEN: " + event.getData().getToken());
-      AccessToken accessToken = event.getData();
-      if (this.signUpView != null) {
-        this.signUpView.signUpSuccessful();
-      }
-    } else {
-      if (this.signUpView != null) {
-        this.signUpView.showErrorSnackbar(event.getThrowable().getMessage());
-      }
-    }
-  }*/
 }

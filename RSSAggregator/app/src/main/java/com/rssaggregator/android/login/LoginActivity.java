@@ -6,24 +6,26 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.login.adapter.ViewPagerAdapter;
 import com.rssaggregator.android.login.view.LoginFragment;
 import com.rssaggregator.android.login.view.SignUpFragment;
+import com.rssaggregator.android.utils.BaseActivity;
 import com.rssaggregator.android.utils.Globals;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity {
+/**
+ * Activity for logging and signing up views.
+ */
+public class LoginActivity extends BaseActivity {
 
   @BindView(R.id.tabs) TabLayout tabs;
   @BindView(R.id.viewpager) ViewPager viewPager;
-
-  private Resources resources;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,13 +33,25 @@ public class LoginActivity extends AppCompatActivity {
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
 
-    this.resources = getResources();
+    Resources resources = getResources();
+
+    /**
+     * Reset Shared Preferences
+     */
+    SharedPreferencesUtils.setApiToken(this, "");
+    SharedPreferencesUtils.setUserEmail(this, "");
+    SharedPreferencesUtils.setUserId(this, -1);
+    SharedPreferencesUtils.setShowOnlyUnread(this, false);
 
     /**
      * Get ids when user signs up.
      */
-    String loginUser = getIntent().getStringExtra(Globals.EXTRA_KEY_SIGNUP_USERNAME);
-    String passwordUser = getIntent().getStringExtra(Globals.EXTRA_KEY_SIGNUP_PASSWORD);
+    String loginUser = "";
+    String passwordUser = "";
+    if (getIntent() != null) {
+      loginUser = getIntent().getStringExtra(Globals.EXTRA_KEY_SIGNUP_USERNAME);
+      passwordUser = getIntent().getStringExtra(Globals.EXTRA_KEY_SIGNUP_PASSWORD);
+    }
 
     /**
      * Initialize tab views.

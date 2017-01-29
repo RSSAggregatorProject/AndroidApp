@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="@string/key_profile_category"
+        android:title="@string/title_profile_category">
+
+        <Preference
+            android:key="@string/key_name_profile">
+        </Preference>
+
+        <SwitchPreference
+            android:key="@string/key_show_all"
+            android:title="@string/show_all" />
+
+        <Preference
+            android:key="@string/key_logout"
+            android:title="@string/title_logout">
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/key_about_category"
+        android:title="@string/title_about_category">
+
+        <Preference
+            android:key="@string/key_version"
+            android:summary="@string/summary_version"
+            android:title="@string/title_version">
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

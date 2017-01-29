@@ -8,6 +8,8 @@ import com.rssaggregator.android.network.RssApi;
 import com.rssaggregator.android.network.internal.RestService;
 import com.rssaggregator.android.network.internal.RssApiImpl;
 import com.rssaggregator.android.network.utils.DateDeserializer;
+import com.rssaggregator.android.network.utils.TokenRequestInterceptor;
+import com.rssaggregator.android.utils.Globals;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,6 +20,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -37,8 +40,13 @@ public class ApiClientModule {
 
   @Provides
   @Singleton
-  protected RestService provideRestService() {
+  protected RestService provideRestService(TokenRequestInterceptor requestInterceptor) {
+    HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    builder.addInterceptor(interceptor);
+    builder.addInterceptor(requestInterceptor);
     OkHttpClient client = builder.build();
 
     GsonBuilder gsonBuilder = new GsonBuilder();
@@ -48,7 +56,7 @@ public class ApiClientModule {
 
     Retrofit retrofit = new Retrofit.Builder()
         .client(client)
-        .baseUrl("http://api.comeon.io/1.0/")
+        .baseUrl(Globals.API_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build();
 
@@ -57,7 +65,15 @@ public class ApiClientModule {
 
   @Provides
   @Singleton
-  RssApi provideApi(Context context, RestService restService, EventBus eventBus) {
-    return new RssApiImpl(context, restService, eventBus);
+  RssApi provideApi(Context context, RestService restService, EventBus eventBus,
+                    TokenRequestInterceptor requestInterceptor) {
+    return new RssApiImpl(context, restService, eventBus, requestInterceptor);
   }
+
+  @Provides
+  @Singleton
+  TokenRequestInterceptor provideTokenRequestInterceptor() {
+    return new TokenRequestInterceptor();
+  }
+
 }
