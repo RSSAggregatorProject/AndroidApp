@@ -134,7 +134,6 @@ public class ItemDetailsPresenterImpl implements ItemDetailsPresenter {
         this.item = null;
       }
     } else {
-      this.itemDetailsView.showSnackBarError();
       this.itemDetailsView.updateItemRead(this.item.isRead());
       this.item = null;
     }

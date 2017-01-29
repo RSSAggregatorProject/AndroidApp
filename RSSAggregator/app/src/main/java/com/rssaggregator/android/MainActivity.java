@@ -27,6 +27,7 @@ import com.rssaggregator.android.feed.event.ItemClickedEvent;
 import com.rssaggregator.android.feed.event.NavigationItemClickedEvent;
 import com.rssaggregator.android.feed.presenter.MainPresenterImpl;
 import com.rssaggregator.android.feed.view.MainView;
+import com.rssaggregator.android.login.LoginActivity;
 import com.rssaggregator.android.navigationdrawer.ExpandableListAdapter;
 import com.rssaggregator.android.network.event.AccessTokenFetchedEvent;
 import com.rssaggregator.android.network.model.AccessToken;
@@ -445,6 +446,12 @@ public class MainActivity extends BaseActivity implements MainView {
       error = resources.getString(R.string.unknown_error);
     }
     Snackbar.make(this.rootViewRl, error, Snackbar.LENGTH_SHORT).show();
+
+    if ("Your token has expired !".equals(error)) {
+      Intent intent = new Intent(this, LoginActivity.class);
+      startActivity(intent);
+      finish();
+    }
   }
 
   /**

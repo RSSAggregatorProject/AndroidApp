@@ -92,7 +92,8 @@
     <string name="title_profile_category">My Profile</string>
     <string name="key_name_profile">key_name_profile</string>
     <string name="key_show_all">key_show_all</string>
-    <string name="show_all">Show only unread items.</string>
+    <string name="show_all_title">Show Unread</string>
+    <string name="show_all_summary">Show only unread items.</string>
     <string name="key_logout">key_logout</string>
     <string name="title_logout">Log Out</string>
     <string name="key_about_category">key_about</string>
