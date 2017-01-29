@@ -550,6 +550,10 @@ public class MainActivity extends BaseActivity implements MainView {
       this.itemsAdapter = new ItemsAdapter(this, data);
       this.itemsRecyclerView.setAdapter(itemsAdapter);
 
+      if (this.itemClicked != null) {
+        this.itemsRecyclerView.scrollToPosition(ArrayUtils.getPositionInList(data, itemClicked));
+      }
+
       this.contentView.setVisibility(View.VISIBLE);
       this.loadingView.setVisibility(View.GONE);
       this.errorView.setVisibility(View.GONE);
@@ -574,6 +578,10 @@ public class MainActivity extends BaseActivity implements MainView {
       this.itemsAdapter = new ItemsAdapter(this, data);
       this.itemsRecyclerView.setAdapter(itemsAdapter);
 
+      if (this.itemClicked != null) {
+        this.itemsRecyclerView.scrollToPosition(ArrayUtils.getPositionInList(data, itemClicked));
+      }
+
       this.contentView.setVisibility(View.VISIBLE);
       this.loadingView.setVisibility(View.GONE);
       this.errorView.setVisibility(View.GONE);
@@ -597,6 +605,10 @@ public class MainActivity extends BaseActivity implements MainView {
     if (data != null && data.size() != 0) {
       this.itemsAdapter = new ItemsAdapter(this, data);
       this.itemsRecyclerView.setAdapter(itemsAdapter);
+
+      if (this.itemClicked != null) {
+        this.itemsRecyclerView.scrollToPosition(ArrayUtils.getPositionInList(data, itemClicked));
+      }
 
       this.contentView.setVisibility(View.VISIBLE);
       this.loadingView.setVisibility(View.GONE);

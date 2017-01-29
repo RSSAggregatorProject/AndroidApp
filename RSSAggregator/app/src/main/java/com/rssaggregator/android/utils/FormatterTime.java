@@ -96,7 +96,7 @@ public class FormatterTime {
    * Return the new formatted date like "x minute(s) ago".
    *
    * @param context      {@link Context} of the application.
-   * @param diffSecondes Number of secondes between the current date and the date of the issue.
+   * @param diffSecondes Number of secondes between the current date and the date of the item.
    *
    * @return The new formatted {@link String} date.
    */
@@ -115,7 +115,7 @@ public class FormatterTime {
    * Return the new formatted date like "x hour(s) ago".
    *
    * @param context      {@link Context} of the application.
-   * @param diffSecondes Number of secondes between the current date and the date of the issue.
+   * @param diffSecondes Number of secondes between the current date and the date of the item.
    *
    * @return The new formatted {@link String} date.
    */
@@ -132,79 +132,79 @@ public class FormatterTime {
   /**
    * Return the new formatted date like "Yesterday at h:mm AM/PM".
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item.
    *
    * @return The new formatted {@link String} date.
    */
-  private static String formatAsYesterday(Context context, Date dateIssue) {
+  private static String formatAsYesterday(Context context, Date dateItem) {
     SimpleDateFormat format = new SimpleDateFormat(
         context.getResources().getString(R.string.time_formatter), Locale.getDefault());
 
     if (context == null)
-      return "Yesterday at " + format.format(dateIssue);
+      return "Yesterday at " + format.format(dateItem);
 
     return String.format(context.getResources().getString(R.string.yesterday_time_formatter),
-        format.format(dateIssue));
+        format.format(dateItem));
   }
 
   /**
    * Return the new formatted date like "WeekDay at h:mm AM/PM".
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item.
    *
    * @return The new formatted {@link String} date.
    */
-  private static String formatAsLastWeek(Context context, Date dateIssue) {
+  private static String formatAsLastWeek(Context context, Date dateItem) {
     SimpleDateFormat formatDate = new SimpleDateFormat(
         context.getResources().getString(R.string.day_time_formatter), Locale.getDefault());
     SimpleDateFormat formatTime = new SimpleDateFormat(
         context.getResources().getString(R.string.time_formatter), Locale.getDefault());
     if (context == null)
-      return formatDate.format(dateIssue) + " at " + formatTime.format(dateIssue);
+      return formatDate.format(dateItem) + " at " + formatTime.format(dateItem);
 
     return String.format(context.getResources().getString(R.string.at_time_formatter),
-        formatDate.format(dateIssue), formatTime.format(dateIssue));
+        formatDate.format(dateItem), formatTime.format(dateItem));
   }
 
   /**
    * Return the new formatted date like "Month Day at h:mm AM/PM".
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item.
    *
    * @return The new formatted {@link String} date.
    */
-  private static String formatAsLastMonth(Context context, Date dateIssue) {
+  private static String formatAsLastMonth(Context context, Date dateItem) {
     SimpleDateFormat formatMonth = new SimpleDateFormat(
         context.getResources().getString(R.string.month_time_formatter), Locale.getDefault());
     SimpleDateFormat formatTime = new SimpleDateFormat(
         context.getResources().getString(R.string.time_formatter), Locale.getDefault());
 
     if (context == null)
-      return formatMonth.format(dateIssue) + " at " + formatTime.format(dateIssue);
+      return formatMonth.format(dateItem) + " at " + formatTime.format(dateItem);
 
     return String.format(context.getResources().getString(R.string.at_time_formatter),
-        formatMonth.format(dateIssue), formatTime.format(dateIssue));
+        formatMonth.format(dateItem), formatTime.format(dateItem));
   }
 
   /**
    * Return the new formatted date like "Month Day".
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item.
    *
    * @return The new formatted {@link String} date.
    */
-  private static String formatAsLastYear(Context context, Date dateIssue, Date currentDate) {
-    Calendar calIssue = Calendar.getInstance();
-    calIssue.setTime(dateIssue);
+  private static String formatAsLastYear(Context context, Date dateItem, Date currentDate) {
+    Calendar calItem = Calendar.getInstance();
+    calItem.setTime(dateItem);
     Calendar calCurrent = Calendar.getInstance();
     calCurrent.setTime(currentDate);
     SimpleDateFormat format;
 
-    if (calIssue.get(Calendar.YEAR) == calCurrent.get(Calendar.YEAR)) {
+    if (calItem.get(Calendar.YEAR) == calCurrent.get(Calendar.YEAR)) {
       format = new SimpleDateFormat(
           context.getResources().getString(R.string.month_time_formatter),
           Locale.getDefault());
@@ -213,27 +213,27 @@ public class FormatterTime {
           context.getResources().getString(R.string.full_time_formatter),
           Locale.getDefault());
     }
-    return format.format(dateIssue);
+    return format.format(dateItem);
   }
 
   /**
    * Return the new formatted date like "Month Day, Year"
    *
-   * @param context   {@link Context} of the application.
-   * @param dateIssue {@link Date} of the issue.
+   * @param context  {@link Context} of the application.
+   * @param dateItem {@link Date} of the item.
    *
    * @return The new formatted {@link String} date.
    */
-  private static String formatAsOther(Context context, Date dateIssue) {
+  private static String formatAsOther(Context context, Date dateItem) {
     SimpleDateFormat format = new SimpleDateFormat(
         context.getResources().getString(R.string.full_time_formatter),
         Locale.getDefault());
-    return format.format(dateIssue);
+    return format.format(dateItem);
   }
 
 
   /**
-   * Compare the current date and the date of the issue and check if these two dates have the same
+   * Compare the current date and the date of the item and check if these two dates have the same
    * day.
    *
    * @param dateToCompare {@link Date} to compare with the current date.
@@ -250,27 +250,27 @@ public class FormatterTime {
   }
 
   /**
-   * Compare the current date and the date of the issue and check if there is one day between the
-   * two dates.
+   * Compare the current date and the date of the item and check if there is one day between the two
+   * dates.
    *
-   * @param dateIssue   {@link Date} of the issue.
+   * @param dateItem    {@link Date} of the item.
    * @param currentDate Current {@link Date}.
    *
    * @return True if it's there is one day between the two dates.
    */
-  private static boolean isYesterday(Date dateIssue, Date currentDate) {
+  private static boolean isYesterday(Date dateItem, Date currentDate) {
     Calendar tmpCal = Calendar.getInstance();
-    tmpCal.setTime(dateIssue);
+    tmpCal.setTime(dateItem);
     tmpCal.add(Calendar.DAY_OF_MONTH, 1);
-    dateIssue = tmpCal.getTime();
-    return isSameDay(dateIssue, currentDate);
+    dateItem = tmpCal.getTime();
+    return isSameDay(dateItem, currentDate);
   }
 
   /**
-   * Check if the difference (in secondes) between the current date and the date of the issue is
-   * less than a week (604800 secondes).
+   * Check if the difference (in secondes) between the current date and the date of the item is less
+   * than a week (604800 secondes).
    *
-   * @param diffSecondes Number of secondes between the current date and the date of the issue.
+   * @param diffSecondes Number of secondes between the current date and the date of the item.
    *
    * @return True if it's less than a week.
    */
@@ -279,10 +279,10 @@ public class FormatterTime {
   }
 
   /**
-   * Check if the difference (in secondes) between the current date and the date of the issue is
-   * less than a month (2678400 secondes).
+   * Check if the difference (in secondes) between the current date and the date of the item is less
+   * than a month (2678400 secondes).
    *
-   * @param diffSecondes Number of secondes between the current date and the date of the issue.
+   * @param diffSecondes Number of secondes between the current date and the date of the item.
    *
    * @return True if it's less than a month.
    */
@@ -291,10 +291,10 @@ public class FormatterTime {
   }
 
   /**
-   * Check if the difference (in secondes) between the current date and the date of the issue is
-   * less than a year (31557600 secondes).
+   * Check if the difference (in secondes) between the current date and the date of the item is less
+   * than a year (31557600 secondes).
    *
-   * @param diffSecondes Number of secondes between the current date and the date of the issue.
+   * @param diffSecondes Number of secondes between the current date and the date of the item.
    *
    * @return True if it's less than a year.
    */

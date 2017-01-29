@@ -3,6 +3,9 @@ package com.rssaggregator.android.feed.event;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 
+/**
+ * Event when the user clicks on a category/channel of the navigation drawer.
+ */
 public class NavigationItemClickedEvent {
   private boolean isAll;
   private boolean isStar;

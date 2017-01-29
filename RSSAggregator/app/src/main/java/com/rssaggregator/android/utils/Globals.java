@@ -1,5 +1,8 @@
 package com.rssaggregator.android.utils;
 
+/**
+ * Class which regroups some global attributes.
+ */
 public class Globals {
 
   /**

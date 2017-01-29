@@ -121,6 +121,10 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
   // OnClick Methods
   //
   //
+
+  /**
+   * Action when user adds a category.
+   */
   @OnClick(R.id.addCategory)
   public void addCategory() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -172,6 +176,9 @@ public class AddFeedActivity extends BaseActivity implements AddFeedView {
     });
   }
 
+  /**
+   * Action when the user subscribes/adds a feed.
+   */
   @OnClick(R.id.addFeed)
   public void addFeed() {
     String rssLink = rssLinkTv.getText().toString();

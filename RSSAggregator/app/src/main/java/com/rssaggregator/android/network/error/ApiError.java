@@ -3,6 +3,9 @@ package com.rssaggregator.android.network.error;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Error class from the API.
+ */
 public class ApiError {
   @Expose
   @SerializedName("status")

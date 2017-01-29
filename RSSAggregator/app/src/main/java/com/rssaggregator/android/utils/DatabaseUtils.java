@@ -1,5 +1,8 @@
 package com.rssaggregator.android.utils;
 
+/**
+ * Class which regroups utility attributes for database (SQLite Android).
+ */
 public class DatabaseUtils {
 
   /**

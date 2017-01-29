@@ -393,7 +393,7 @@ public class RssApiImpl implements RssApi {
    */
   @Override
   public void updateReadStateItem(Item item, Boolean state) {
-    ItemStateWrapper wrapper = new ItemStateWrapper(state, null);
+    ItemStateWrapper wrapper = new ItemStateWrapper(state, item.isStarred());
     this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
@@ -435,7 +435,7 @@ public class RssApiImpl implements RssApi {
    */
   @Override
   public void updateStarStateItem(Item item, Boolean state) {
-    ItemStateWrapper wrapper = new ItemStateWrapper(null, state);
+    ItemStateWrapper wrapper = new ItemStateWrapper(item.isRead(), state);
     this.restService.updateStateItem(item.getItemId(), wrapper).enqueue(new Callback<Void>() {
       @Override
       public void onResponse(Call<Void> call, Response<Void> response) {
