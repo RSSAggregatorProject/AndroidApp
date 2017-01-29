@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_star_item"
+        android:icon="@drawable/ic_star_border_white_24dp"
+        android:title="@string/action_star_item"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_see_item"
+        android:icon="@drawable/ic_visibility_off_white_24dp"
+        android:title="@string/action_see_item"
+        app:showAsAction="ifRoom" />
+
+</menu>

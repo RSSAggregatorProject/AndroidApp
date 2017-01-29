@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rowChannel"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/keyline_48"
+    android:background="?android:attr/selectableItemBackground"
+    >
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iconChannel"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/keyline_72"
+        android:src="@drawable/icon_rss"
+        app:srcCompat="@drawable/icon_rss"
+        />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/nameChannel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/keyline_16"
+        android:layout_toEndOf="@+id/iconChannel"
+        android:padding="@dimen/keyline_8"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        tools:text="test"
+        />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/unreadChannel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/keyline_16"
+        android:text="0"
+        android:textSize="14sp"
+        />
+
+</RelativeLayout>

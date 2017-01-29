@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rootView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor"
+    >
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/keyline_48"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:src="@drawable/icon_rss"
+        app:srcCompat="@drawable/icon_rss"
+        tools:ignore="ContentDescription"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonSignUp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        >
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/keyline_48"
+            android:layout_marginLeft="@dimen/keyline_48"
+            android:layout_marginRight="@dimen/keyline_48"
+            android:layout_marginStart="@dimen/keyline_48"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_weight="1"
+            android:theme="@style/AppTheme.CustomEditText"
+            >
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/emailSignUpEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_email_hint"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/accentColor"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/keyline_16"
+            android:layout_marginEnd="@dimen/keyline_48"
+            android:layout_marginLeft="@dimen/keyline_48"
+            android:layout_marginRight="@dimen/keyline_48"
+            android:layout_marginStart="@dimen/keyline_48"
+            android:layout_marginTop="@dimen/keyline_8"
+            android:layout_weight="1"
+            android:theme="@style/AppTheme.CustomEditText"
+            >
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/passwordSignUpEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_password_hint"
+                android:inputType="textPassword"
+                android:textColor="@color/accentColor"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.hkm.ui.processbutton.iml.ActionProcessButton
+        android:id="@+id/buttonSignUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/keyline_48"
+        android:layout_marginEnd="@dimen/keyline_48"
+        android:layout_marginLeft="@dimen/keyline_48"
+        android:layout_marginRight="@dimen/keyline_48"
+        android:layout_marginStart="@dimen/keyline_48"
+        android:layout_marginTop="@dimen/keyline_16"
+        android:imeOptions="actionDone"
+        android:padding="@dimen/keyline_16"
+        android:text="@string/login_button_signup"
+        android:textAllCaps="false"
+        android:textColor="@color/primaryDarkColor"
+        android:textSize="22sp"
+        app:pb_colorComplete="@color/green_complete"
+        app:pb_colorNormal="@color/accentColor"
+        app:pb_colorPressed="@color/accentColor"
+        app:pb_textComplete="@string/login_button_success"
+        app:pb_textProgress="@string/login_button_loading"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">RSS Aggregator</string>
+
+    <!--ACTIVITY NAME-->
+    <string name="add_feed_title_activity">Add a RSS Feed</string>
+    <string name="settings_activity">Settings</string>
+
+    <string name="login_tab_login">Login</string>
+    <string name="login_tab_signup">Sign Up</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_login">Log In</string>
+    <string name="login_button_signup">Sign Up</string>
+    <string name="login_button_success">Success</string>
+    <string name="login_button_loading">Loading</string>
+
+    <string name="login_empty_email">Please fill the email field!</string>
+    <string name="login_empty_password">Please fill the password field!</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--LOGIN-->
+    <string name="login_signup_success">Signing up succeed!</string>
+
+    <!--NAVIGATION DRAWER -->
+    <string name="category_all">All</string>
+    <string name="category_star">Starred Items</string>
+    <string name="category_channel">%1$s / %2$s</string>
+
+    <!--ACTION -->
+    <string name="action_add_channel">Add a feed</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_unsubscribe_channel">Unsubscribe to channel</string>
+    <string name="action_mark_as_read">Mark items as read</string>
+    <string name="action_star_item">Star the item</string>
+    <string name="action_see_item">Mark as read/unread</string>
+
+    <!-- Strings for FormatterTime -->
+    <string name="future_time_formatter">In the future</string>
+    <string name="unknown_date_formatter">Unknown date</string>
+    <string name="now_time_formatter">Just now</string>
+    <plurals name="minute_time_formatter">
+        <item quantity="one">%1$d minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
+    </plurals>
+    <plurals name="hour_time_formatter">
+        <item quantity="one">%1$d hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
+    </plurals>
+    <string name="yesterday_time_formatter">Yesterday at %1$s</string>
+    <string name="at_time_formatter">%1$s at %2$s</string>
+    <string name="day_time_formatter">EEEE</string>
+    <string name="time_formatter">h:mm a</string>
+    <string name="month_time_formatter">MMMM d</string>
+    <string name="full_time_formatter">MMMM d, yyyy</string>
+    <string name="digital_date_formatter">MM/dd/yyyy</string>
+    <string name="full_date_formatter">EEEE, MMMM d, yyyy</string>
+
+    <!--ERROR MESSAGES-->
+    <string name="unknown_error">Unknown error</string>
+    <string name="network_error">Please check your network connection</string>
+    <string name="empty_items">No items in this category</string>
+    <string name="empty_star_items">No starred items. Stars some ones!</string>
+    <string name="empty_channel_items">No items in this channel</string>
+
+    <string name="unsubscribe_feed_success">You are unsubscribed to the channel!\n
+    Update of the view!</string>
+
+    <!--ADD FEEDS-->
+    <string name="add_feed_success">You are now subscribed to the feed!</string>
+    <string name="create_new_category">Create a new category</string>
+    <string name="add_feed_rss_field_empty">Please fill the RSS link field!</string>
+    <string name="add_feed_category_error">Please select a valid category!</string>
+    <string name="add_category">Add a category</string>
+    <string name="category">Category</string>
+    <string name="rss_link_hint">RSS Feed</string>
+    <string name="create_category_empty_field">Please fill the category field!</string>
+    <string name="create_category_already_existed">The category already exists!</string>
+    <string name="add_feed_waiting">RSS Feed is currently adding!</string>
+    <string name="create_category_success">The category %1$s has been successfully created!</string>
+
+    <string name="item_details_null">Error when fetching the article.</string>
+
+    <!--MISC-->
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+
+    <!--SETTINGS ACTIVITY-->
+    <string name="key_profile_category">key_profile</string>
+    <string name="title_profile_category">My Profile</string>
+    <string name="key_name_profile">key_name_profile</string>
+    <string name="key_show_all">key_show_all</string>
+    <string name="show_all_title">Show Unread</string>
+    <string name="show_all_summary">Show only unread items.</string>
+    <string name="key_logout">key_logout</string>
+    <string name="title_logout">Log Out</string>
+    <string name="key_about_category">key_about</string>
+    <string name="title_about_category">About</string>
+    <string name="key_version">key_version</string>
+    <string name="title_version">Version</string>
+    <string name="summary_version">1.0</string>
+
+    <string name="error_star_item">Connection to the server impossible ! Your article will be
+        saved only locally!</string>
+
+</resources>
