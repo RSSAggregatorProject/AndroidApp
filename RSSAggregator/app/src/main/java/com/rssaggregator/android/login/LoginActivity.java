@@ -41,6 +41,7 @@ public class LoginActivity extends BaseActivity {
     SharedPreferencesUtils.setApiToken(this, "");
     SharedPreferencesUtils.setUserEmail(this, "");
     SharedPreferencesUtils.setUserId(this, -1);
+    SharedPreferencesUtils.setShowOnlyUnread(this, false);
 
     /**
      * Get ids when user signs up.

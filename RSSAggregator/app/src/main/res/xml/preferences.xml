@@ -8,6 +8,10 @@
             android:key="@string/key_name_profile">
         </Preference>
 
+        <SwitchPreference
+            android:key="@string/key_show_all"
+            android:title="@string/show_all" />
+
         <Preference
             android:key="@string/key_logout"
             android:title="@string/title_logout">

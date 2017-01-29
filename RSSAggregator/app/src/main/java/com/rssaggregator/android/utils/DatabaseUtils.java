@@ -73,4 +73,25 @@ public class DatabaseUtils {
 
   public static final String SELECT_UNREAD_ITEMS = "SELECT * FROM " + TABLE_ITEM
       + " WHERE " + DatabaseUtils.READ_ITEM + "=0";
+
+  /**
+   * Only Unread SELECTS
+   */
+  public static final String SELECT_ALL_ITEMS_UNREAD = "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+      + " WHERE " + DatabaseUtils.READ_ITEM + "=0 "
+      + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+
+  public static final String SELECT_ITEMS_BY_CATEGORY_ID_UNREAD(Integer categoryId) {
+    return "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+        + " WHERE " + DatabaseUtils.ID_CATEGORY + "= " + categoryId
+        + " AND " + DatabaseUtils.READ_ITEM + "=0 "
+        + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  }
+
+  public static final String SELECT_ITEMS_BY_CHANNEL_ID_UNREAD(Integer channelId) {
+    return "SELECT * FROM " + DatabaseUtils.TABLE_ITEM
+        + " WHERE " + DatabaseUtils.ID_CHANNEL + "= " + channelId
+        + " AND " + DatabaseUtils.READ_ITEM + "=0 "
+        + " ORDER BY " + DatabaseUtils.PUBDATE_ITEM + " DESC";
+  }
 }

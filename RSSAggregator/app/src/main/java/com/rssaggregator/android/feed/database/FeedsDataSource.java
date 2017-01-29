@@ -206,12 +206,17 @@ public class FeedsDataSource {
    *
    * @return a List of Items.
    */
-  public List<Item> selectAllItems() {
+  public List<Item> selectAllItems(boolean isShowingOnlyUnread) {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
     SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
 
     List<Item> items = new ArrayList<>();
-    String selectQuery = DatabaseUtils.SELECT_ALL_ITEMS;
+    String selectQuery;
+    if (isShowingOnlyUnread) {
+      selectQuery = DatabaseUtils.SELECT_ALL_ITEMS_UNREAD;
+    } else {
+      selectQuery = DatabaseUtils.SELECT_ALL_ITEMS;
+    }
 
     Cursor c = database.rawQuery(selectQuery, null);
 
@@ -298,12 +303,17 @@ public class FeedsDataSource {
    *
    * @return List of Items.
    */
-  public List<Item> selectItemsByCategoryId(Integer categoryId) {
+  public List<Item> selectItemsByCategoryId(Integer categoryId, boolean isShowingOnlyUnread) {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
     SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
 
     List<Item> items = new ArrayList<>();
-    String selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CATEGORY_ID(categoryId);
+    String selectQuery;
+    if (isShowingOnlyUnread) {
+      selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CATEGORY_ID_UNREAD(categoryId);
+    } else {
+      selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CATEGORY_ID(categoryId);
+    }
 
     Cursor c = database.rawQuery(selectQuery, null);
 
@@ -345,12 +355,17 @@ public class FeedsDataSource {
    *
    * @return List of Items.
    */
-  public List<Item> selectItemsByChannelId(Integer channelId) {
+  public List<Item> selectItemsByChannelId(Integer channelId, boolean isShowingOnlyUnread) {
     SQLiteDatabase database = this.databaseHandler.getReadableDatabase();
     SimpleDateFormat sdf = new SimpleDateFormat(Globals.DATE_FORMAT, Locale.getDefault());
 
     List<Item> items = new ArrayList<>();
-    String selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CHANNEL_ID(channelId);
+    String selectQuery;
+    if (isShowingOnlyUnread) {
+      selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CHANNEL_ID_UNREAD(channelId);
+    } else {
+      selectQuery = DatabaseUtils.SELECT_ITEMS_BY_CHANNEL_ID(channelId);
+    }
 
     Cursor c = database.rawQuery(selectQuery, null);
 

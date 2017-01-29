@@ -1,5 +1,6 @@
 package com.rssaggregator.android.feed.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.rssaggregator.android.feed.database.FeedsDataSource;
@@ -13,6 +14,7 @@ import com.rssaggregator.android.network.model.CategoriesWrapper;
 import com.rssaggregator.android.network.model.Category;
 import com.rssaggregator.android.network.model.Channel;
 import com.rssaggregator.android.network.model.Item;
+import com.rssaggregator.android.utils.SharedPreferencesUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,6 +30,7 @@ public class MainPresenterImpl implements MainPresenter {
   private RssApi rssApi;
   private EventBus eventBus;
   private MainView mainView;
+  private Activity activity;
   private FeedsDataSource dataBase;
   private Integer channelId;
 
@@ -44,8 +47,9 @@ public class MainPresenterImpl implements MainPresenter {
   }
 
   @Override
-  public void setDatabase(Context context) {
+  public void setDatabase(Context context, Activity activity) {
     this.dataBase = new FeedsDataSource(context);
+    this.activity = activity;
   }
 
   @Override
@@ -272,7 +276,7 @@ public class MainPresenterImpl implements MainPresenter {
    * @return List of Items.
    */
   private List<Item> getAllItems_Database() {
-    return this.dataBase.selectAllItems();
+    return this.dataBase.selectAllItems(SharedPreferencesUtils.getShowOnlyUnread(activity));
   }
 
   /**
@@ -292,7 +296,8 @@ public class MainPresenterImpl implements MainPresenter {
    * @return List of Items.
    */
   private List<Item> getItemsByCategoryId_Database(Integer categoryId) {
-    return this.dataBase.selectItemsByCategoryId(categoryId);
+    return this.dataBase.selectItemsByCategoryId(categoryId,
+        SharedPreferencesUtils.getShowOnlyUnread(activity));
   }
 
   /**
@@ -303,7 +308,8 @@ public class MainPresenterImpl implements MainPresenter {
    * @return List of Items.
    */
   private List<Item> getItemsByChannelId_Database(Integer channelId) {
-    return this.dataBase.selectItemsByChannelId(channelId);
+    return this.dataBase.selectItemsByChannelId(channelId,
+        SharedPreferencesUtils.getShowOnlyUnread(activity));
   }
 
   private List<Channel> getChannelsByCategoryId_Database(Integer categoryId) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 
 import com.rssaggregator.android.R;
 import com.rssaggregator.android.RssAggregatorApplication;
@@ -29,10 +30,14 @@ public class SettingsFragment extends PreferenceFragment {
     addPreferencesFromResource(R.xml.preferences);
 
     Preference userName;
+    SwitchPreference showAll;
     Preference logout;
 
     userName = findPreference(getString(R.string.key_name_profile));
+    showAll = (SwitchPreference) findPreference(getString(R.string.key_show_all));
     logout = findPreference(getString(R.string.key_logout));
+
+    showAll.setChecked(SharedPreferencesUtils.getShowOnlyUnread(getActivity()));
 
     userName.setTitle(SharedPreferencesUtils.getUserEmail(getActivity()));
     logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -44,6 +49,17 @@ public class SettingsFragment extends PreferenceFragment {
         startActivity(intent);
         getActivity().finish();
         return false;
+      }
+    });
+    showAll.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+      @Override
+      public boolean onPreferenceClick(Preference preference) {
+        if (SharedPreferencesUtils.getShowOnlyUnread(getActivity())) {
+          SharedPreferencesUtils.setShowOnlyUnread(getActivity(), false);
+        } else {
+          SharedPreferencesUtils.setShowOnlyUnread(getActivity(), true);
+        }
+        return true;
       }
     });
   }

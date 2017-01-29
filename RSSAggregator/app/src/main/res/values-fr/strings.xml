@@ -99,5 +99,7 @@
     <string name="add_feed_waiting">Le flux RSS est en cours d\'ajout !</string>
     <string name="error_star_item">Connexion au serveur impossible ! Votre article sera sauvegardé localement uniquement.</string>
     <string name="action_see_item">Marquer comme lu/non lu</string>
+    <string name="key_show_all">key_show_all</string>
+    <string name="show_all">Montrer uniquement  les articles non lus.</string>
 
 </resources>

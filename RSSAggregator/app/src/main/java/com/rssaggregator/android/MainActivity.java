@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity implements MainView {
     this.eventBus = appComponent.bus();
     this.presenter = appComponent.mainPresenterImpl();
     this.presenter.setMainView(this);
-    this.presenter.setDatabase(this);
+    this.presenter.setDatabase(this, this);
   }
 
   /**
